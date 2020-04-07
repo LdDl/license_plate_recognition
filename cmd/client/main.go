@@ -10,7 +10,6 @@ import (
 	"log"
 	"os"
 	engine "plates_recognition_grpc"
-	"strconv"
 	"time"
 
 	"google.golang.org/grpc"
@@ -21,11 +20,11 @@ var (
 	portConfig = flag.String("port", "50051", "server's port")
 	fileConfig = flag.String("file", "sample.jpg", "filename")
 
-	xConfig = flag.String("x", "0", "x (left top of crop rectangle)")
-	yConfig = flag.String("y", "0", "y (left top of crop rectangle)")
+	xConfig = flag.Int("x", 0, "x (left top of crop rectangle)")
+	yConfig = flag.Int("y", 0, "y (left top of crop rectangle)")
 
-	widthConfig  = flag.String("width", "4032", "width of crop rectangle")
-	heightConfig = flag.String("height", "3024", "height of crop rectangle")
+	widthConfig  = flag.Int("width", 4032, "width of crop rectangle")
+	heightConfig = flag.Int("height", 3024, "height of crop rectangle")
 )
 
 func main() {
@@ -33,27 +32,6 @@ func main() {
 
 	if *hostConfig == "" || *portConfig == "" || *fileConfig == "" {
 		flag.Usage()
-		return
-	}
-
-	x, err := strconv.Atoi(*xConfig)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	y, err := strconv.Atoi(*yConfig)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	width, err := strconv.Atoi(*widthConfig)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	height, err := strconv.Atoi(*heightConfig)
-	if err != nil {
-		log.Println(err)
 		return
 	}
 
@@ -112,10 +90,10 @@ func main() {
 			Timestamp: time.Now().Unix(),
 			Image:     sendS3,
 			Detection: &engine.Detection{
-				XLeft:  int32(x),
-				YTop:   int32(y),
-				Width:  int32(width),
-				Height: int32(height),
+				XLeft:  int32(*xConfig),
+				YTop:   int32(*yConfig),
+				Width:  int32(*widthConfig),
+				Height: int32(*heightConfig),
 				LineId: 1,
 			},
 		},
