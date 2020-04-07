@@ -66,18 +66,6 @@ func main() {
 	channel.Send(&engine.Response{Message: "Channel opened!"})
 	channel.Send(&engine.Response{Message: "Channel opened!"})
 	cfg := &engine.Config{}
-	/*
-		//Uncomment second to start test of hot reload and copy right uid
-		ans, eerr := c.SetConfig(ctx, &engine.Config{Uid: "b0898235-589b-42f7-b7ee-7a978fd4d944", DetectionLines: []*engine.DetectionLine{&engine.DetectionLine{Id: 2, Begin: &engine.Point{X: 1, Y: 1}, End: &engine.Point{X: 416, Y: 416}}}})
-		fmt.Println(ans, eerr)
-		return
-
-		//Uncomment first to start test of hot rload
-		for {
-			cfg, err := channel.Recv()
-			fmt.Println(cfg, err)
-		}
-	*/
 	cfg, err = channel.Recv()
 	cfg.DetectionLines = []*engine.DetectionLine{&engine.DetectionLine{Id: 1, Begin: &engine.Point{X: 1, Y: 1}, End: &engine.Point{X: 416, Y: 416}}}
 	resp, _ := c.SetConfig(ctx, cfg)
