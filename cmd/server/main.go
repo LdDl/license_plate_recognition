@@ -102,15 +102,17 @@ func (rs *RecognitionServer) WaitFrames() {
 				// fmt.Println("img of size", n.Bounds().Dx(), n.Bounds().Dy())
 				resp, err := rs.netW.ReadLicensePlates(n, true)
 				for i := range resp.Plates {
-
-					f, err := os.Create(fmt.Sprintf("./detected/%s_%s_%.0f.jpeg", resp.Plates[i].Text, time.Now().Format("2006-01-02T15-04-05"), resp.Plates[i].Probability))
+					fname := fmt.Sprintf("./detected/%s_%s_%.0f.jpeg", resp.Plates[i].Text, time.Now().Format("2006-01-02T15-04-05"), resp.Plates[i].Probability)
+					f, err := os.Create(fname)
 					if err != nil {
+						log.Println(err)
 						rs.resp <- &ServerResponse{nil, err}
 					}
 					defer f.Close()
 
 					err = jpeg.Encode(f, resp.Plates[i].CroppedNumber, nil)
 					if err != nil {
+						log.Println(err)
 						rs.resp <- &ServerResponse{nil, err}
 					}
 
