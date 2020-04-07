@@ -3,10 +3,8 @@ package plates_recognition_grpc
 import (
 	"image"
 	"sort"
-	"time"
 
 	"github.com/LdDl/go-darknet"
-	"github.com/disintegration/imaging"
 )
 
 func (net *YOLONetwork) detectSymbols(imgSrc image.Image) ([]image.Rectangle, string, float32, error) {
