@@ -24,3 +24,9 @@ cd cmd/client
 go build -o client_app main.go
 ./client_app --host=localhost --port=50051 --file=sample.jpg -x 0 -y 0 --width=4032 --height=3024
 ```
+
+Для проверки, что сервер так же умеет возвращать ошибку:
+```shell
+./client_app --host=localhost --port=50051 --file=sample.jpg -x 0 -y 0 --width=42 --height=-24
+```
+
