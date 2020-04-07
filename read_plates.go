@@ -8,7 +8,7 @@ import (
 )
 
 // ReadLicensePlates Прогон изображения через нейронную сеть
-func (net *YOLONetwork) ReadLicensePlates(imgSrc image.Image) (*YOLOResponse, error) {
+func (net *YOLONetwork) ReadLicensePlates(imgSrc image.Image, saveCrop bool) (*YOLOResponse, error) {
 	resp := YOLOResponse{}
 	st := time.Now()
 	plates, err := net.detectPlates(imgSrc)
@@ -21,12 +21,16 @@ func (net *YOLONetwork) ReadLicensePlates(imgSrc image.Image) (*YOLOResponse, er
 		if err != nil {
 			return nil, err
 		}
-		resp.Plates = append(resp.Plates, PlateResponse{
+		plResp := PlateResponse{
 			Rect:        plates[i],
 			Text:        text,
 			Probability: float64(prob),
 			OCRRects:    rects,
-		})
+		}
+		if saveCrop {
+			plResp.CroppedNumber = rectcropimg
+		}
+		resp.Plates = append(resp.Plates)
 	}
 	resp.Elapsed = time.Since(st)
 	return &resp, nil

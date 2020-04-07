@@ -14,10 +14,11 @@ type YOLOResponse struct {
 
 // PlateResponse Информация по детектируемой плашке
 type PlateResponse struct {
-	Text        string
-	Probability float64
-	Rect        image.Rectangle
-	OCRRects    []image.Rectangle
+	Text          string
+	Probability   float64
+	Rect          image.Rectangle
+	CroppedNumber *image.NRGBA
+	OCRRects      []image.Rectangle
 }
 
 func (resp *YOLOResponse) String() string {
