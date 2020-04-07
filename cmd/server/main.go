@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"net"
 	engine "plates_recognition_grpc"
@@ -46,13 +47,16 @@ func main() {
 
 	grpcInstance := grpc.NewServer()
 
+	rs := &RecognitionServer{
+		netW:        netw,
+		framesQueue: make(chan interface{}, *framesLimitConfig),
+		maxLen:      *framesLimitConfig,
+	}
+	rs.WaitFrames()
+
 	engine.RegisterSTYoloServer(
 		grpcInstance,
-		&RecognitionServer{
-			netW:        netw,
-			framesQueue: make(chan interface{}, *framesLimitConfig),
-			maxLen:      *framesLimitConfig,
-		},
+		rs,
 	)
 
 	if err := grpcInstance.Serve(stdListener); err != nil {
@@ -71,6 +75,7 @@ type RecognitionServer struct {
 }
 
 func (rs *RecognitionServer) WaitFrames() {
+	fmt.Println("YOLO networks waiting for frames now")
 	go func() {
 		for {
 			select {
