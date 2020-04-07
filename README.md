@@ -5,6 +5,11 @@ chmod +x download_data.sh
 ./download_data.sh
 ```
 
+## Генерация protobuff файлов расширения *.go
+```shell
+protoc -I . yolo_grpc.proto --go_out=plugins=grpc:.
+```
+
 ## Запуск сервера
 ```shell
 cd cmd/server
