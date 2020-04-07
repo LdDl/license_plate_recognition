@@ -8,16 +8,15 @@ import (
 )
 
 // ReadLicensePlates Прогон изображения через нейронную сеть
-func (net *YOLONetwork) ReadLicensePlates(imgSrc image.Image, carBox image.Rectangle) (*YOLOResponse, error) {
+func (net *YOLONetwork) ReadLicensePlates(imgSrc image.Image) (*YOLOResponse, error) {
 	resp := YOLOResponse{}
 	st := time.Now()
-	carimg := imaging.Crop(imgSrc, carBox)
-	plates, err := net.detectPlates(carimg)
+	plates, err := net.detectPlates(imgSrc)
 	if err != nil {
 		return nil, err
 	}
 	for i := range plates {
-		rectcropimg := imaging.Crop(carimg, plates[i])
+		rectcropimg := imaging.Crop(imgSrc, plates[i])
 		rects, text, prob, err := net.detectSymbols(rectcropimg)
 		if err != nil {
 			return nil, err
