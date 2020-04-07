@@ -45,3 +45,11 @@ func main() {
 	grpcInstance := grpc.NewServer()
 
 }
+
+type RecognitionServer struct {
+	engine.UnimplementedSTYoloServer
+	// net chan *yolo_net.YOLONetwork
+	// sync.Mutex
+	// channels map[string]*yolo_net.STYolo_ConfigUpdaterServer
+	// configs  map[string]*yolo_net.Config
+}

@@ -2,4 +2,3 @@ cmd/data/*
 *.weights
 cmd/server/main
 cmd/server/recognition_server
-yolo_grpc.pb.go
