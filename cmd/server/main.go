@@ -54,6 +54,7 @@ func main() {
 		netW:        netw,
 		framesQueue: make(chan *image.NRGBA, *framesLimitConfig),
 		maxLen:      *framesLimitConfig,
+		resp:        make(chan *ServerResponse, *framesLimitConfig),
 	}
 	// Init neural network's queue
 	rs.WaitFrames()
@@ -154,7 +155,7 @@ func (rs *RecognitionServer) SendDetection(ctx context.Context, in *engine.CamIn
 	vehicleBBox := image.Rect(xl, yt, bbw, bbh)
 	vehicleImg := imaging.Crop(stdImage, vehicleBBox)
 
-	go rs.SendToQueue(vehicleImg)
+	rs.SendToQueue(vehicleImg)
 
 	response := <-rs.resp
 	log.Println(*response.Resp)
