@@ -8,7 +8,7 @@ wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download
 
 #license_plates inference cfg
 wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1EAmjHb99YZ2aqLE_TwJqKC_UDLEpJq8Z' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1EAmjHb99YZ2aqLE_TwJqKC_UDLEpJq8Z" -O data/license_plates_inference.cfg && rm -rf /tmp/cookies.txt
-sed -i -e "\$anames = coco.names" license_plates_inference.cfg
+sed -i -e "\$anames = license_plates.names" license_plates_inference.cfg
 
 #ocr weights
 wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1WQwWuYfiU8ZxFEqDoZvH2bKUBUw797U9' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1WQwWuYfiU8ZxFEqDoZvH2bKUBUw797U9" -O data/ocr_plates_7000.weights && rm -rf /tmp/cookies.txt
