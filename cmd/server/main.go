@@ -158,7 +158,7 @@ func (rs *RecognitionServer) SendDetection(ctx context.Context, in *engine.CamIn
 	rs.SendToQueue(vehicleImg)
 
 	response := <-rs.resp
-	log.Println(*response.Resp)
+	log.Println(response.Resp.String())
 	if response.Error != nil {
 		return &engine.Response{Message: "error", Warning: response.Error.Error()}, nil
 	}
