@@ -5,6 +5,7 @@ import (
 	"log"
 	"net"
 	engine "plates_recognition_grpc"
+	"time"
 
 	"google.golang.org/grpc"
 )
@@ -20,11 +21,14 @@ var (
 
 	// gRPC port
 	portConfig = flag.String("port", "50051", "Port to listen")
+
+	// frames limit in queue
+	framesLimitConfig = flag.Int("framesLimit", 200, "Max number of frames in queue")
 )
 
 func main() {
 	flag.Parse()
-	if *platesConfig == "" || *platesWeights == "" || *ocrConfig == "" || *ocrWeights == "" {
+	if *platesConfig == "" || *platesWeights == "" || *ocrConfig == "" || *ocrWeights == "" || *framesLimitConfig == 0 {
 		flag.Usage()
 		return
 	}
@@ -42,10 +46,12 @@ func main() {
 
 	grpcInstance := grpc.NewServer()
 
-	engine.RegisterSTYoloServer
+	engine.RegisterSTYoloServer(
 		grpcInstance,
 		&RecognitionServer{
-			netW: netw
+			netW:        netw,
+			framesQueue: make(chan interface{}, *framesLimitConfig),
+			maxLen:      *framesLimitConfig,
 		},
 	)
 
@@ -59,4 +65,27 @@ func main() {
 type RecognitionServer struct {
 	engine.UnimplementedSTYoloServer
 	netW *engine.YOLONetwork
+
+	framesQueue chan interface{}
+	maxLen      int
+}
+
+func (rs *RecognitionServer) WaitFrames() {
+	go func() {
+		for {
+			select {
+			case n := <-rs.framesQueue:
+				_ = n
+				_ = rs.netW // @todo распознавание
+				continue
+			}
+			time.Sleep(100 * time.Millisecond)
+		}
+	}()
+}
+
+func (rs *RecognitionServer) SendToQueue(n interface{}) {
+	if len(rs.framesQueue) < rs.maxLen {
+		rs.framesQueue <- n
+	}
 }
