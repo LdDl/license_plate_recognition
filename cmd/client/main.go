@@ -62,19 +62,21 @@ func main() {
 	c := engine.NewSTYoloClient(conn)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
-	channel, err := c.ConfigUpdater(context.Background())
-	channel.Send(&engine.Response{Message: "Channel opened!"})
-	channel.Send(&engine.Response{Message: "Channel opened!"})
-	cfg := &engine.Config{}
-	cfg, err = channel.Recv()
-	cfg.DetectionLines = []*engine.DetectionLine{&engine.DetectionLine{Id: 1, Begin: &engine.Point{X: 1, Y: 1}, End: &engine.Point{X: 416, Y: 416}}}
-	resp, _ := c.SetConfig(ctx, cfg)
-	fmt.Println(resp)
+
+	// channel, err := c.ConfigUpdater(context.Background())
+	// channel.Send(&engine.Response{Message: "Channel opened!"})
+	// channel.Send(&engine.Response{Message: "Channel opened!"})
+	// cfg := &engine.Config{}
+	// cfg, err = channel.Recv()
+	// cfg.DetectionLines = []*engine.DetectionLine{&engine.DetectionLine{Id: 1, Begin: &engine.Point{X: 1, Y: 1}, End: &engine.Point{X: 416, Y: 416}}}
+	// resp, _ := c.SetConfig(ctx, cfg)
+	// fmt.Println(resp)
 	defer cancel()
+
 	r, err := c.SendDetection(
 		ctx,
 		&engine.CamInfo{
-			CamId:     cfg.GetUid(),
+			CamId:     "my_new_uuid",
 			Timestamp: time.Now().Unix(),
 			Image:     sendS3,
 			Detection: &engine.Detection{
@@ -98,6 +100,6 @@ func main() {
 	if len(r.GetWarning()) != 0 {
 		log.Println("Warn:", r.GetWarning())
 	}
-	c.SetConfig(ctx, cfg)
+	// c.SetConfig(ctx, cfg)
 	log.Println("Answer:", r.GetMessage())
 }
