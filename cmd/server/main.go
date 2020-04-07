@@ -6,8 +6,10 @@ import (
 	"flag"
 	"fmt"
 	"image"
+	"image/jpeg"
 	"log"
 	"net"
+	"os"
 	engine "plates_recognition_grpc"
 	"time"
 
@@ -100,20 +102,19 @@ func (rs *RecognitionServer) WaitFrames() {
 				// fmt.Println("img of size", n.Bounds().Dx(), n.Bounds().Dy())
 				resp, err := rs.netW.ReadLicensePlates(n, true)
 				for i := range resp.Plates {
-					_ = i
-					// fname := fmt.Sprintf("./detected/%s_%s_%.0f.jpeg", resp.Plates[i].Text, time.Now().Format("2006-01-02T15-04-05"), resp.Plates[i].Probability)
-					// f, err := os.Create(fname)
-					// if err != nil {
-					// 	fmt.Println(err)
-					// 	// rs.resp <- &ServerResponse{nil, err}
-					// }
-					// defer f.Close()
+					fname := fmt.Sprintf("./detected/%s_%s_%.0f.jpeg", resp.Plates[i].Text, time.Now().Format("2006-01-02T15-04-05"), resp.Plates[i].Probability)
+					f, err := os.Create(fname)
+					if err != nil {
+						fmt.Println(err)
+						// rs.resp <- &ServerResponse{nil, err}
+					}
+					defer f.Close()
 
-					// err = jpeg.Encode(f, resp.Plates[i].CroppedNumber, nil)
-					// if err != nil {
-					// 	fmt.Println(err)
-					// 	// rs.resp <- &ServerResponse{nil, err}
-					// }
+					err = jpeg.Encode(f, resp.Plates[i].CroppedNumber, nil)
+					if err != nil {
+						fmt.Println(err)
+						// rs.resp <- &ServerResponse{nil, err}
+					}
 
 				}
 				rs.resp <- &ServerResponse{resp, err}

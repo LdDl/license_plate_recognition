@@ -30,7 +30,7 @@ func (net *YOLONetwork) ReadLicensePlates(imgSrc image.Image, saveCrop bool) (*Y
 		if saveCrop {
 			plResp.CroppedNumber = rectcropimg
 		}
-		resp.Plates = append(resp.Plates)
+		resp.Plates = append(resp.Plates, plResp)
 	}
 	resp.Elapsed = time.Since(st)
 	return &resp, nil
