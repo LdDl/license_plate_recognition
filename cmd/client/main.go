@@ -52,28 +52,18 @@ func main() {
 
 	url := fmt.Sprintf("%s:%s", *hostConfig, *portConfig)
 
-	// Set up a connection to the server.
 	conn, err := grpc.Dial(url, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
 		log.Println(err)
 		return
 	}
 	defer conn.Close()
-	c := engine.NewSTYoloClient(conn)
 
+	client := engine.NewSTYoloClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
-
-	// channel, err := c.ConfigUpdater(context.Background())
-	// channel.Send(&engine.Response{Message: "Channel opened!"})
-	// channel.Send(&engine.Response{Message: "Channel opened!"})
-	// cfg := &engine.Config{}
-	// cfg, err = channel.Recv()
-	// cfg.DetectionLines = []*engine.DetectionLine{&engine.DetectionLine{Id: 1, Begin: &engine.Point{X: 1, Y: 1}, End: &engine.Point{X: 416, Y: 416}}}
-	// resp, _ := c.SetConfig(ctx, cfg)
-	// fmt.Println(resp)
 	defer cancel()
 
-	r, err := c.SendDetection(
+	r, err := client.SendDetection(
 		ctx,
 		&engine.CamInfo{
 			CamId:     "my_new_uuid",
@@ -89,17 +79,16 @@ func main() {
 		},
 	)
 	if err != nil {
-		log.Println(err)
-		return
+		log.Fatalln(err)
 	}
 
 	if len(r.GetError()) != 0 {
-		log.Println(r.GetError())
-		return
+		log.Fatalln(r.GetError())
 	}
+
 	if len(r.GetWarning()) != 0 {
 		log.Println("Warn:", r.GetWarning())
 	}
-	// c.SetConfig(ctx, cfg)
+
 	log.Println("Answer:", r.GetMessage())
 }
