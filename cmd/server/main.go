@@ -81,6 +81,12 @@ type RecognitionServer struct {
 
 	framesQueue chan *image.NRGBA
 	maxLen      int
+	resp        chan *ServerResponse
+}
+
+type ServerResponse struct {
+	Resp  *engine.YOLOResponse
+	Error error
 }
 
 func (rs *RecognitionServer) WaitFrames() {
@@ -89,9 +95,10 @@ func (rs *RecognitionServer) WaitFrames() {
 		for {
 			select {
 			case n := <-rs.framesQueue:
-				_ = n
-				_ = rs.netW // @todo распознавание
-				fmt.Println("img of size", n.Bounds().Dx(), n.Bounds().Dy())
+				// fmt.Println("img of size", n.Bounds().Dx(), n.Bounds().Dy())
+				resp, err := rs.netW.ReadLicensePlates(n)
+				fmt.Println(resp, err)
+				rs.resp <- &ServerResponse{resp, err}
 				continue
 			}
 			time.Sleep(100 * time.Millisecond)
@@ -148,5 +155,6 @@ func (rs *RecognitionServer) SendDetection(ctx context.Context, in *engine.CamIn
 	vehicleImg := imaging.Crop(stdImage, vehicleBBox)
 
 	rs.SendToQueue(vehicleImg)
-	return nil, nil
+
+	return &engine.Response{Message: "ok", Warning: ""}, nil
 }
