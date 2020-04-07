@@ -33,7 +33,6 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	_ = netw
 
 	stdListener, err := net.Listen("tcp", "0.0.0.0:"+*portConfig)
 	if err != nil {
@@ -43,7 +42,12 @@ func main() {
 
 	grpcInstance := grpc.NewServer()
 
-	engine.RegisterSTYoloServer(grpcInstance, &RecognitionServer{})
+	engine.RegisterSTYoloServer
+		grpcInstance,
+		&RecognitionServer{
+			netW: netw
+		},
+	)
 
 	if err := grpcInstance.Serve(stdListener); err != nil {
 		log.Fatal(err)
@@ -54,8 +58,5 @@ func main() {
 
 type RecognitionServer struct {
 	engine.UnimplementedSTYoloServer
-	// net chan *yolo_net.YOLONetwork
-	// sync.Mutex
-	// channels map[string]*yolo_net.STYolo_ConfigUpdaterServer
-	// configs  map[string]*yolo_net.Config
+	netW *engine.YOLONetwork
 }
