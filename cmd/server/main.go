@@ -40,9 +40,15 @@ func main() {
 		log.Fatal(err)
 		return
 	}
-	_ = stdListener
 
 	grpcInstance := grpc.NewServer()
+
+	engine.RegisterSTYoloServer(grpcInstance, &RecognitionServer{})
+
+	if err := grpcInstance.Serve(stdListener); err != nil {
+		log.Fatal(err)
+		return
+	}
 
 }
 
