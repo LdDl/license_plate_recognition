@@ -5,6 +5,8 @@ import (
 	"log"
 	"net"
 	engine "plates_recognition_grpc"
+
+	"google.golang.org/grpc"
 )
 
 var (
@@ -39,4 +41,7 @@ func main() {
 		return
 	}
 	_ = stdListener
+
+	grpcInstance := grpc.NewServer()
+
 }
