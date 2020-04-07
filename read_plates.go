@@ -3,6 +3,8 @@ package plates_recognition_grpc
 import (
 	"image"
 	"time"
+
+	"github.com/disintegration/imaging"
 )
 
 // ReadLicensePlates Прогон изображения через нейронную сеть
