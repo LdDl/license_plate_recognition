@@ -1,3 +1,4 @@
+#create folder if not exists
 mkdir -p data
 
 #license_plates weights
