@@ -31,6 +31,8 @@ var (
 
 	// frames limit in queue
 	framesLimitConfig = flag.Int("framesLimit", 200, "Max number of frames in queue")
+
+	saveDetectedConfig = flag.Uint("saveDetected", 0, "Do you want to save detected objects into JPEG files?")
 )
 
 func main() {
@@ -101,22 +103,26 @@ func (rs *RecognitionServer) WaitFrames() {
 			case n := <-rs.framesQueue:
 				// fmt.Println("img of size", n.Bounds().Dx(), n.Bounds().Dy())
 				resp, err := rs.netW.ReadLicensePlates(n, true)
-				for i := range resp.Plates {
-					fname := fmt.Sprintf("./detected/%s_%s_%.0f.jpeg", resp.Plates[i].Text, time.Now().Format("2006-01-02T15-04-05"), resp.Plates[i].Probability)
-					f, err := os.Create(fname)
-					if err != nil {
-						fmt.Println(err)
-						// rs.resp <- &ServerResponse{nil, err}
-					}
-					defer f.Close()
 
-					err = jpeg.Encode(f, resp.Plates[i].CroppedNumber, nil)
-					if err != nil {
-						fmt.Println(err)
-						// rs.resp <- &ServerResponse{nil, err}
-					}
+				if *saveDetectedConfig != 0 {
+					for i := range resp.Plates {
+						fname := fmt.Sprintf("./detected/%s_%s_%.0f.jpeg", resp.Plates[i].Text, time.Now().Format("2006-01-02T15-04-05"), resp.Plates[i].Probability)
+						f, err := os.Create(fname)
+						if err != nil {
+							fmt.Println(err)
+							// rs.resp <- &ServerResponse{nil, err}
+						}
+						defer f.Close()
 
+						err = jpeg.Encode(f, resp.Plates[i].CroppedNumber, nil)
+						if err != nil {
+							fmt.Println(err)
+							// rs.resp <- &ServerResponse{nil, err}
+						}
+
+					}
 				}
+
 				rs.resp <- &ServerResponse{resp, err}
 				continue
 			}
