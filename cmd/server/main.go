@@ -32,6 +32,7 @@ var (
 	// frames limit in queue
 	framesLimitConfig = flag.Int("framesLimit", 200, "Max number of frames in queue")
 
+	// Store detected object to filesytem?
 	saveDetectedConfig = flag.Uint("saveDetected", 0, "Do you want to save detected objects into JPEG files?")
 )
 
