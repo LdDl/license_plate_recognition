@@ -1,0 +1,7 @@
+cmd/data/*
+*.weights
+cmd/server/main
+cmd/server/recognition_server
+cmd/server/detected
+cmd/client/main
+cmd/client/client_app
