@@ -6,13 +6,13 @@ import (
 	"time"
 )
 
-// YOLOResponse Ответ нейронной сети
+// YOLOResponse Neural net's response
 type YOLOResponse struct {
 	Plates  []PlateResponse
 	Elapsed time.Duration
 }
 
-// PlateResponse Информация по детектируемой плашке
+// PlateResponse Detected license plate information
 type PlateResponse struct {
 	Text          string
 	Probability   float64
@@ -24,13 +24,13 @@ type PlateResponse struct {
 func (resp *YOLOResponse) String() string {
 	result := ""
 	for i := range resp.Plates {
-		result += fmt.Sprintf("Плашка #%d:\n%s\n", i, resp.Plates[i].String())
+		result += fmt.Sprintf("License plate #%d:\n%s\n", i, resp.Plates[i].String())
 	}
-	result += fmt.Sprintf("\nУшло времени на детектирование и распознавание: %v", resp.Elapsed)
+	result += fmt.Sprintf("\nElapsed to find plate and read symbols: %v", resp.Elapsed)
 	return result
 }
 
 func (presp *PlateResponse) String() string {
-	result := fmt.Sprintf("\tТекст: %s\n\tОтклонение (для обнаруженных символов): %f\n\tГраницы прямоугольника: %v", presp.Text, presp.Probability, presp.Rect)
+	result := fmt.Sprintf("\tText: %s\n\tDeviation (for detected symbols): %f\n\tRectangle's borders: %v", presp.Text, presp.Probability, presp.Rect)
 	return result
 }

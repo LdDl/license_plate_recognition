@@ -35,6 +35,7 @@ func main() {
 		return
 	}
 
+	// Read image from file
 	ifile, err := os.Open(*fileConfig)
 	if err != nil {
 		log.Println(err)
@@ -50,8 +51,8 @@ func main() {
 	err = jpeg.Encode(buf, imgIn, nil)
 	sendS3 := buf.Bytes()
 
+	// Connect to gRPC
 	url := fmt.Sprintf("%s:%s", *hostConfig, *portConfig)
-
 	conn, err := grpc.Dial(url, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
 		log.Println(err)
@@ -59,10 +60,12 @@ func main() {
 	}
 	defer conn.Close()
 
+	// Init gRPC client
 	client := engine.NewSTYoloClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
+	// Send message to gRPC server
 	r, err := client.SendDetection(
 		ctx,
 		&engine.CamInfo{
@@ -74,7 +77,6 @@ func main() {
 				YTop:   int32(*yConfig),
 				Width:  int32(*widthConfig),
 				Height: int32(*heightConfig),
-				LineId: 1,
 			},
 		},
 	)

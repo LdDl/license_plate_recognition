@@ -7,7 +7,7 @@ import (
 	"github.com/disintegration/imaging"
 )
 
-// ReadLicensePlates Прогон изображения через нейронную сеть
+// ReadLicensePlates Returns found license plates with information about each one
 func (net *YOLONetwork) ReadLicensePlates(imgSrc image.Image, saveCrop bool) (*YOLOResponse, error) {
 	resp := YOLOResponse{}
 	st := time.Now()

@@ -162,7 +162,7 @@ func (rs *RecognitionServer) SendDetection(ctx context.Context, in *engine.CamIn
 	bbw := xl + dw
 	bbh := yt + dh
 	if xl < 0 || yt < 0 || xl+dw > width || yt+dh > height {
-		// warning = warning + " Bounding box is bigger than image and would by changed"
+		// Bounding box is bigger than image
 	}
 	if xl < 0 {
 		xl = 0

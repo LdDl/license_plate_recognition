@@ -5,8 +5,6 @@ import (
 	"image"
 	"image/jpeg"
 	"math"
-
-	darknet "github.com/LdDl/go-darknet"
 )
 
 func round(v float64) int {
@@ -46,13 +44,4 @@ func averagePercent64(arr []float64) float64 {
 		sum += arr[i]
 	}
 	return sum / float64(len(arr))
-}
-
-// Detections slice of image.Rectangle (for sorting)
-type Detections []*darknet.Detection
-
-func (r Detections) Len() int      { return len(r) }
-func (r Detections) Swap(i, j int) { r[i], r[j] = r[j], r[i] }
-func (r Detections) Less(i, j int) bool {
-	return r[i].BoundingBox.StartPoint.X < r[j].BoundingBox.StartPoint.X
 }
