@@ -5,7 +5,7 @@
 - [Requirements](#requirements)
 - [Installation](#installation)
     - [Get source code](#get-source-code)
-    - [Potobuf generation](#generate-protobuf-*.go-files-for-Go-server-and-Go-client)
+    - [Protobuf generation](#generate-protobuf-*.go-files-for-Go-server-and-Go-client)
     - [Neural net weights](#download-weights-and-configuration)
 - [Usage](#usage)
     - [Server](#start-server)
