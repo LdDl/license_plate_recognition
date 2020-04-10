@@ -19,7 +19,7 @@ Please follow instructions from [google/protobuff](https://github.com/golang/pro
 ## Instalation
 
 ### Get source code
-#### Notice: we are using Go-modules
+**Notice: we are using Go-modules**
 ```shell
 go get https://github.com/LdDl/license_plate_recognition
 ```
@@ -30,7 +30,7 @@ protoc -I . yolo_grpc.proto --go_out=plugins=grpc:.
 ```
 
 ### Download weights and configuration
-#### Notice: please read source code of *.sh script before downloading. This script MAY NOT fit yours needs.
+**Notice: please read [source code of *.sh script](cmd/download_data_RU.sh) before downloading. This script MAY NOT fit yours needs.**
 ```shell
 cd cmd/
 chmod +x download_data_RU.sh
@@ -53,7 +53,7 @@ chmod +x download_data_RU.sh
     ```
 
 ### Test Client-Server
-#### Notice: server should be started
+**Notice: server should be started**
 * Navigate to folder with server application source code
     ```shell
     cd cmd/client
