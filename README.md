@@ -6,8 +6,8 @@ protoc -I . yolo_grpc.proto --go_out=plugins=grpc:.
 ## Download weights and configuration
 ```shell
 cd cmd/
-chmod +x download_data.sh
-./download_data.sh
+chmod +x download_data_RU.sh
+./download_data_RU.sh
 ```
 
 ## Start server
