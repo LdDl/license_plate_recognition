@@ -1,7 +1,11 @@
 # WORK IN PROGRESS. DO NOT USE IT IN PRODUCTION
+# NEED TO MAKE MORE DOCS
+# NEED MAKE IT CLEAR
+# NEED TO UPDATE CODEBASE AND SERVER RESPONSES
 
 ## Table of Contents
 
+- [About](#about)
 - [Requirements](#requirements)
 - [Installation](#installation)
     - [Get source code](#get-source-code)
@@ -10,6 +14,25 @@
 - [Usage](#usage)
     - [Server](#start-server)
     - [Client](#test-client-server)
+
+
+## About
+We are target to do gRPC server which accepts this struct:
+```protobuf
+message CamInfo{
+    string cam_id = 1; // id of camera (just to identify client app)
+    int64 timestamp = 2; // timestamp of vehicle fixation (on client app)
+    bytes image = 3; // bytes of full image in PNG-format
+    Detection detection = 4; // BBox of detected vehicle (region of interest where License Plate Recognition is needed)
+}
+message Detection{
+    int32 x_left = 1;
+    int32 y_top = 2;
+    int32 height = 3;
+    int32 width = 4;
+}
+```
+and can store detected license plates into filesystem with this filename layout "PLATE-NUMBER_TIMESTAMP_Deviation.jpeg"
 
 ## Requirements
 Please follow instructions from [go-darknet](https://github.com/LdDl/go-darknet#go-darknet-go-bindings-for-darknet). There you will know how to install [AlexeyAB's darknet](https://github.com/AlexeyAB/darknet) and [Go-binding](https://github.com/LdDl/go-darknet) for it.
