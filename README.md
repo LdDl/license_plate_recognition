@@ -1,3 +1,5 @@
+# WORK IN PROGRESS. DO NOT USE IT IN PRODUCTION
+
 ## Generate protobuf *.go files
 ```shell
 protoc -I . yolo_grpc.proto --go_out=plugins=grpc:.
