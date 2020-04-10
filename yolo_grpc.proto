@@ -6,7 +6,6 @@ message CamInfo{
     int64 timestamp = 2;
     bytes image = 3;// bytes of full image in PNG - format
     Detection detection = 4;
-    repeated Point track = 5;
 }
 
 message Detection{
@@ -17,32 +16,14 @@ message Detection{
     int32 line_id = 5;
 }
 
-message Point{
-    int32 x = 1;
-    int32 y = 2;
-}
-
 message Response {
   string message = 1;
   string warning = 2;
   string error = 3;
 }
 
-message Config{
-    string uid=1;
-    repeated DetectionLine detection_lines=2;
-}
-
-message DetectionLine{
-    int32 id = 1;
-    Point begin = 2;
-    Point end =3;
-}
-
 // STYolo - service for second and third yolo stages 
 // in car number search cascade
 service STYolo{
     rpc SendDetection(CamInfo) returns (Response){};
-    rpc ConfigUpdater(stream Response) returns (stream Config){};
-    rpc SetConfig(Config) returns (Response){}
 }
