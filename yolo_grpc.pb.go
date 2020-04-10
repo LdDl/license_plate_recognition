@@ -29,7 +29,6 @@ type CamInfo struct {
 	Timestamp            int64      `protobuf:"varint,2,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
 	Image                []byte     `protobuf:"bytes,3,opt,name=image,proto3" json:"image,omitempty"`
 	Detection            *Detection `protobuf:"bytes,4,opt,name=detection,proto3" json:"detection,omitempty"`
-	Track                []*Point   `protobuf:"bytes,5,rep,name=track,proto3" json:"track,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}   `json:"-"`
 	XXX_unrecognized     []byte     `json:"-"`
 	XXX_sizecache        int32      `json:"-"`
@@ -84,13 +83,6 @@ func (m *CamInfo) GetImage() []byte {
 func (m *CamInfo) GetDetection() *Detection {
 	if m != nil {
 		return m.Detection
-	}
-	return nil
-}
-
-func (m *CamInfo) GetTrack() []*Point {
-	if m != nil {
-		return m.Track
 	}
 	return nil
 }
@@ -166,53 +158,6 @@ func (m *Detection) GetLineId() int32 {
 	return 0
 }
 
-type Point struct {
-	X                    int32    `protobuf:"varint,1,opt,name=x,proto3" json:"x,omitempty"`
-	Y                    int32    `protobuf:"varint,2,opt,name=y,proto3" json:"y,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *Point) Reset()         { *m = Point{} }
-func (m *Point) String() string { return proto.CompactTextString(m) }
-func (*Point) ProtoMessage()    {}
-func (*Point) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ffa770372640e731, []int{2}
-}
-
-func (m *Point) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Point.Unmarshal(m, b)
-}
-func (m *Point) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Point.Marshal(b, m, deterministic)
-}
-func (m *Point) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Point.Merge(m, src)
-}
-func (m *Point) XXX_Size() int {
-	return xxx_messageInfo_Point.Size(m)
-}
-func (m *Point) XXX_DiscardUnknown() {
-	xxx_messageInfo_Point.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Point proto.InternalMessageInfo
-
-func (m *Point) GetX() int32 {
-	if m != nil {
-		return m.X
-	}
-	return 0
-}
-
-func (m *Point) GetY() int32 {
-	if m != nil {
-		return m.Y
-	}
-	return 0
-}
-
 type Response struct {
 	Message              string   `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
 	Warning              string   `protobuf:"bytes,2,opt,name=warning,proto3" json:"warning,omitempty"`
@@ -226,7 +171,7 @@ func (m *Response) Reset()         { *m = Response{} }
 func (m *Response) String() string { return proto.CompactTextString(m) }
 func (*Response) ProtoMessage()    {}
 func (*Response) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ffa770372640e731, []int{3}
+	return fileDescriptor_ffa770372640e731, []int{2}
 }
 
 func (m *Response) XXX_Unmarshal(b []byte) error {
@@ -268,152 +213,37 @@ func (m *Response) GetError() string {
 	return ""
 }
 
-type Config struct {
-	Uid                  string           `protobuf:"bytes,1,opt,name=uid,proto3" json:"uid,omitempty"`
-	DetectionLines       []*DetectionLine `protobuf:"bytes,2,rep,name=detection_lines,json=detectionLines,proto3" json:"detection_lines,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}         `json:"-"`
-	XXX_unrecognized     []byte           `json:"-"`
-	XXX_sizecache        int32            `json:"-"`
-}
-
-func (m *Config) Reset()         { *m = Config{} }
-func (m *Config) String() string { return proto.CompactTextString(m) }
-func (*Config) ProtoMessage()    {}
-func (*Config) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ffa770372640e731, []int{4}
-}
-
-func (m *Config) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Config.Unmarshal(m, b)
-}
-func (m *Config) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Config.Marshal(b, m, deterministic)
-}
-func (m *Config) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Config.Merge(m, src)
-}
-func (m *Config) XXX_Size() int {
-	return xxx_messageInfo_Config.Size(m)
-}
-func (m *Config) XXX_DiscardUnknown() {
-	xxx_messageInfo_Config.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Config proto.InternalMessageInfo
-
-func (m *Config) GetUid() string {
-	if m != nil {
-		return m.Uid
-	}
-	return ""
-}
-
-func (m *Config) GetDetectionLines() []*DetectionLine {
-	if m != nil {
-		return m.DetectionLines
-	}
-	return nil
-}
-
-type DetectionLine struct {
-	Id                   int32    `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	Begin                *Point   `protobuf:"bytes,2,opt,name=begin,proto3" json:"begin,omitempty"`
-	End                  *Point   `protobuf:"bytes,3,opt,name=end,proto3" json:"end,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *DetectionLine) Reset()         { *m = DetectionLine{} }
-func (m *DetectionLine) String() string { return proto.CompactTextString(m) }
-func (*DetectionLine) ProtoMessage()    {}
-func (*DetectionLine) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ffa770372640e731, []int{5}
-}
-
-func (m *DetectionLine) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_DetectionLine.Unmarshal(m, b)
-}
-func (m *DetectionLine) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_DetectionLine.Marshal(b, m, deterministic)
-}
-func (m *DetectionLine) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DetectionLine.Merge(m, src)
-}
-func (m *DetectionLine) XXX_Size() int {
-	return xxx_messageInfo_DetectionLine.Size(m)
-}
-func (m *DetectionLine) XXX_DiscardUnknown() {
-	xxx_messageInfo_DetectionLine.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_DetectionLine proto.InternalMessageInfo
-
-func (m *DetectionLine) GetId() int32 {
-	if m != nil {
-		return m.Id
-	}
-	return 0
-}
-
-func (m *DetectionLine) GetBegin() *Point {
-	if m != nil {
-		return m.Begin
-	}
-	return nil
-}
-
-func (m *DetectionLine) GetEnd() *Point {
-	if m != nil {
-		return m.End
-	}
-	return nil
-}
-
 func init() {
 	proto.RegisterType((*CamInfo)(nil), "plates_recognition_grpc.CamInfo")
 	proto.RegisterType((*Detection)(nil), "plates_recognition_grpc.Detection")
-	proto.RegisterType((*Point)(nil), "plates_recognition_grpc.Point")
 	proto.RegisterType((*Response)(nil), "plates_recognition_grpc.Response")
-	proto.RegisterType((*Config)(nil), "plates_recognition_grpc.Config")
-	proto.RegisterType((*DetectionLine)(nil), "plates_recognition_grpc.DetectionLine")
 }
 
 func init() { proto.RegisterFile("yolo_grpc.proto", fileDescriptor_ffa770372640e731) }
 
 var fileDescriptor_ffa770372640e731 = []byte{
-	// 489 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x53, 0x4f, 0x6f, 0xd3, 0x3e,
-	0x18, 0x9e, 0xdb, 0xb9, 0xfd, 0xe5, 0xdd, 0xba, 0xfd, 0x64, 0xfe, 0x2c, 0x9a, 0x10, 0x84, 0x20,
-	0xa1, 0x9c, 0xaa, 0xa9, 0xf0, 0x01, 0x90, 0xc6, 0xa5, 0xd2, 0x24, 0xc0, 0x2d, 0x48, 0x3b, 0x45,
-	0x59, 0xfc, 0x36, 0xb5, 0x96, 0xd8, 0x51, 0x62, 0xb4, 0xe6, 0xc2, 0x95, 0x1b, 0x9f, 0x8c, 0x0f,
-	0x85, 0xec, 0xa4, 0x2d, 0x1c, 0xa2, 0xee, 0xd6, 0xa7, 0x7e, 0x5e, 0xbf, 0xcf, 0x1f, 0x07, 0xce,
-	0x1b, 0x9d, 0xeb, 0x38, 0xab, 0xca, 0x74, 0x5a, 0x56, 0xda, 0x68, 0x76, 0x51, 0xe6, 0x89, 0xc1,
-	0x3a, 0xae, 0x30, 0xd5, 0x99, 0x92, 0x46, 0x6a, 0xe5, 0x8e, 0xc3, 0xdf, 0x04, 0xc6, 0xd7, 0x49,
-	0x31, 0x57, 0x2b, 0xcd, 0x9e, 0xc1, 0x28, 0x4d, 0x8a, 0x58, 0x0a, 0x9f, 0x04, 0x24, 0xf2, 0x38,
-	0x4d, 0x93, 0x62, 0x2e, 0xd8, 0x0b, 0xf0, 0x8c, 0x2c, 0xb0, 0x36, 0x49, 0x51, 0xfa, 0x83, 0x80,
-	0x44, 0x43, 0xbe, 0xff, 0x83, 0x3d, 0x05, 0x2a, 0x8b, 0x24, 0x43, 0x7f, 0x18, 0x90, 0xe8, 0x94,
-	0xb7, 0x80, 0x7d, 0x00, 0x4f, 0xa0, 0xc1, 0xd4, 0x2e, 0xf2, 0x8f, 0x03, 0x12, 0x9d, 0xcc, 0xc2,
-	0x69, 0x8f, 0x86, 0xe9, 0xc7, 0x2d, 0x93, 0xef, 0x87, 0xd8, 0x7b, 0xa0, 0xa6, 0x4a, 0xd2, 0x7b,
-	0x9f, 0x06, 0xc3, 0xe8, 0x64, 0xf6, 0xb2, 0x77, 0xfa, 0xb3, 0x96, 0xca, 0xf0, 0x96, 0x1c, 0xfe,
-	0x00, 0x6f, 0x77, 0x9b, 0xf5, 0xb3, 0x89, 0x73, 0x5c, 0x19, 0xe7, 0x87, 0x72, 0xba, 0xb9, 0xc1,
-	0x95, 0x61, 0x4f, 0x80, 0x36, 0xb1, 0xd1, 0xad, 0x17, 0xca, 0x8f, 0x9b, 0xa5, 0x2e, 0xd9, 0x73,
-	0x18, 0xad, 0x51, 0x66, 0x6b, 0xe3, 0x7c, 0x50, 0xde, 0x21, 0x6b, 0xef, 0x41, 0x0a, 0xb3, 0x76,
-	0x26, 0x28, 0x6f, 0x01, 0xbb, 0x80, 0x71, 0x2e, 0x15, 0xda, 0xa8, 0x68, 0x4b, 0xb7, 0x70, 0x2e,
-	0xc2, 0x37, 0x40, 0x9d, 0x1e, 0x76, 0x0a, 0x64, 0xd3, 0xad, 0x25, 0x1b, 0x8b, 0x9a, 0x6e, 0x1d,
-	0x69, 0xc2, 0x25, 0xfc, 0xc7, 0xb1, 0x2e, 0xb5, 0xaa, 0x91, 0xf9, 0x30, 0x2e, 0xb0, 0xae, 0x6d,
-	0x80, 0x6d, 0xe8, 0x5b, 0x68, 0x4f, 0x1e, 0x92, 0x4a, 0x49, 0x95, 0xb9, 0x49, 0x8f, 0x6f, 0xa1,
-	0xd5, 0x84, 0x55, 0xa5, 0x2b, 0x27, 0xd5, 0xe3, 0x2d, 0x08, 0xef, 0x61, 0x74, 0xad, 0xd5, 0x4a,
-	0x66, 0xec, 0x7f, 0x18, 0x7e, 0xdf, 0x95, 0x68, 0x7f, 0xb2, 0x4f, 0x70, 0xbe, 0x4b, 0x36, 0xb6,
-	0x52, 0x6b, 0x7f, 0xe0, 0x62, 0x7d, 0x7b, 0xb8, 0x94, 0x1b, 0xa9, 0x90, 0x9f, 0x89, 0xbf, 0x61,
-	0x1d, 0xfe, 0x24, 0x30, 0xf9, 0x87, 0xc1, 0xce, 0x60, 0xd0, 0xed, 0xa4, 0x7c, 0x20, 0x85, 0xed,
-	0xef, 0x0e, 0x33, 0xa9, 0x9c, 0xf8, 0x47, 0xf4, 0xe7, 0xc8, 0xec, 0x0a, 0x86, 0xa8, 0x84, 0x33,
-	0x76, 0x78, 0xc6, 0x52, 0x67, 0xbf, 0x06, 0x30, 0x5a, 0x2c, 0x6f, 0x75, 0xae, 0xd9, 0x37, 0x98,
-	0x2c, 0x50, 0x89, 0xfd, 0x03, 0x08, 0x7a, 0x2f, 0xe8, 0x9e, 0xfc, 0xe5, 0xeb, 0x5e, 0xc6, 0xb6,
-	0xa1, 0xf0, 0x88, 0xdd, 0xc2, 0xa4, 0x4d, 0xf6, 0x6b, 0x29, 0x12, 0x83, 0x15, 0x3b, 0x3c, 0x75,
-	0xf9, 0xaa, 0x7f, 0xb5, 0xbb, 0x2a, 0x3c, 0x8a, 0xc8, 0x15, 0x61, 0x5f, 0xc0, 0x5b, 0xa0, 0xe9,
-	0x7a, 0x3b, 0x34, 0xf3, 0x28, 0xb5, 0x77, 0x23, 0xf7, 0xc5, 0xbf, 0xfb, 0x13, 0x00, 0x00, 0xff,
-	0xff, 0x6c, 0x75, 0x03, 0x2c, 0x04, 0x04, 0x00, 0x00,
+	// 323 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x74, 0x91, 0x3f, 0x4f, 0xf3, 0x30,
+	0x10, 0x87, 0xdf, 0xbc, 0xad, 0x53, 0x72, 0x80, 0x90, 0xcc, 0x9f, 0x46, 0x88, 0x21, 0x64, 0xca,
+	0xd4, 0xa1, 0x7c, 0x01, 0x24, 0x58, 0x2a, 0x31, 0xb9, 0x15, 0x12, 0x53, 0x08, 0xc9, 0x35, 0xb5,
+	0x14, 0xfb, 0x22, 0xc7, 0x52, 0xdb, 0x85, 0x8f, 0xc1, 0xe7, 0x45, 0x76, 0x1a, 0x3a, 0x75, 0x7c,
+	0x7c, 0x67, 0xdd, 0xf3, 0xbb, 0x83, 0xab, 0x3d, 0x35, 0x94, 0xd7, 0xa6, 0x2d, 0x67, 0xad, 0x21,
+	0x4b, 0x7c, 0xda, 0x36, 0x85, 0xc5, 0x2e, 0x37, 0x58, 0x52, 0xad, 0xa5, 0x95, 0xa4, 0x7d, 0x39,
+	0xfd, 0x09, 0x60, 0xf2, 0x52, 0xa8, 0x85, 0x5e, 0x13, 0xbf, 0x85, 0xb0, 0x2c, 0x54, 0x2e, 0xab,
+	0x38, 0x48, 0x82, 0x2c, 0x12, 0xac, 0x2c, 0xd4, 0xa2, 0xe2, 0x0f, 0x10, 0x59, 0xa9, 0xb0, 0xb3,
+	0x85, 0x6a, 0xe3, 0xff, 0x49, 0x90, 0x8d, 0xc4, 0xf1, 0x81, 0xdf, 0x00, 0x93, 0xaa, 0xa8, 0x31,
+	0x1e, 0x25, 0x41, 0x76, 0x21, 0x7a, 0xe0, 0xcf, 0x10, 0x55, 0x68, 0xb1, 0x74, 0x83, 0xe2, 0x71,
+	0x12, 0x64, 0xe7, 0xf3, 0x74, 0x76, 0xc2, 0x61, 0xf6, 0x3a, 0x74, 0x8a, 0xe3, 0xa7, 0xf4, 0x1b,
+	0xa2, 0xbf, 0x77, 0x67, 0xb6, 0xcb, 0x1b, 0x5c, 0x5b, 0x6f, 0xc6, 0x04, 0xdb, 0xbd, 0xe1, 0xda,
+	0xf2, 0x6b, 0x60, 0xfb, 0xdc, 0x52, 0x6f, 0xc5, 0xc4, 0x78, 0xbf, 0xa2, 0x96, 0xdf, 0x41, 0xb8,
+	0x41, 0x59, 0x6f, 0xac, 0x37, 0x62, 0xe2, 0x40, 0x4e, 0x74, 0x2b, 0x2b, 0xbb, 0xf1, 0x3a, 0x4c,
+	0xf4, 0xc0, 0xa7, 0x30, 0x69, 0xa4, 0x46, 0x17, 0x9a, 0xf5, 0xed, 0x0e, 0x17, 0x55, 0xba, 0x82,
+	0x33, 0x81, 0x5d, 0x4b, 0xba, 0x43, 0x1e, 0xc3, 0x44, 0x61, 0xd7, 0xb9, 0x94, 0xfd, 0x66, 0x06,
+	0x74, 0x95, 0x6d, 0x61, 0xb4, 0xd4, 0xb5, 0x77, 0x88, 0xc4, 0x80, 0x6e, 0x1c, 0x1a, 0x43, 0xc6,
+	0x5b, 0x44, 0xa2, 0x87, 0xf9, 0x27, 0x84, 0xcb, 0xd5, 0x07, 0x35, 0xc4, 0xdf, 0xe1, 0x72, 0x89,
+	0xba, 0x3a, 0x66, 0x4c, 0x4e, 0xee, 0xe7, 0x70, 0x9f, 0xfb, 0xc7, 0x93, 0x1d, 0x83, 0x69, 0xfa,
+	0xef, 0x2b, 0xf4, 0x07, 0x7f, 0xfa, 0x0d, 0x00, 0x00, 0xff, 0xff, 0x59, 0xd7, 0x0a, 0xf8, 0x03,
+	0x02, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -429,8 +259,6 @@ const _ = grpc.SupportPackageIsVersion6
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type STYoloClient interface {
 	SendDetection(ctx context.Context, in *CamInfo, opts ...grpc.CallOption) (*Response, error)
-	ConfigUpdater(ctx context.Context, opts ...grpc.CallOption) (STYolo_ConfigUpdaterClient, error)
-	SetConfig(ctx context.Context, in *Config, opts ...grpc.CallOption) (*Response, error)
 }
 
 type sTYoloClient struct {
@@ -450,51 +278,9 @@ func (c *sTYoloClient) SendDetection(ctx context.Context, in *CamInfo, opts ...g
 	return out, nil
 }
 
-func (c *sTYoloClient) ConfigUpdater(ctx context.Context, opts ...grpc.CallOption) (STYolo_ConfigUpdaterClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_STYolo_serviceDesc.Streams[0], "/plates_recognition_grpc.STYolo/ConfigUpdater", opts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &sTYoloConfigUpdaterClient{stream}
-	return x, nil
-}
-
-type STYolo_ConfigUpdaterClient interface {
-	Send(*Response) error
-	Recv() (*Config, error)
-	grpc.ClientStream
-}
-
-type sTYoloConfigUpdaterClient struct {
-	grpc.ClientStream
-}
-
-func (x *sTYoloConfigUpdaterClient) Send(m *Response) error {
-	return x.ClientStream.SendMsg(m)
-}
-
-func (x *sTYoloConfigUpdaterClient) Recv() (*Config, error) {
-	m := new(Config)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
-func (c *sTYoloClient) SetConfig(ctx context.Context, in *Config, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
-	err := c.cc.Invoke(ctx, "/plates_recognition_grpc.STYolo/SetConfig", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // STYoloServer is the server API for STYolo service.
 type STYoloServer interface {
 	SendDetection(context.Context, *CamInfo) (*Response, error)
-	ConfigUpdater(STYolo_ConfigUpdaterServer) error
-	SetConfig(context.Context, *Config) (*Response, error)
 }
 
 // UnimplementedSTYoloServer can be embedded to have forward compatible implementations.
@@ -503,12 +289,6 @@ type UnimplementedSTYoloServer struct {
 
 func (*UnimplementedSTYoloServer) SendDetection(ctx context.Context, req *CamInfo) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendDetection not implemented")
-}
-func (*UnimplementedSTYoloServer) ConfigUpdater(srv STYolo_ConfigUpdaterServer) error {
-	return status.Errorf(codes.Unimplemented, "method ConfigUpdater not implemented")
-}
-func (*UnimplementedSTYoloServer) SetConfig(ctx context.Context, req *Config) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SetConfig not implemented")
 }
 
 func RegisterSTYoloServer(s *grpc.Server, srv STYoloServer) {
@@ -533,50 +313,6 @@ func _STYolo_SendDetection_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
-func _STYolo_ConfigUpdater_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(STYoloServer).ConfigUpdater(&sTYoloConfigUpdaterServer{stream})
-}
-
-type STYolo_ConfigUpdaterServer interface {
-	Send(*Config) error
-	Recv() (*Response, error)
-	grpc.ServerStream
-}
-
-type sTYoloConfigUpdaterServer struct {
-	grpc.ServerStream
-}
-
-func (x *sTYoloConfigUpdaterServer) Send(m *Config) error {
-	return x.ServerStream.SendMsg(m)
-}
-
-func (x *sTYoloConfigUpdaterServer) Recv() (*Response, error) {
-	m := new(Response)
-	if err := x.ServerStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
-func _STYolo_SetConfig_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Config)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(STYoloServer).SetConfig(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/plates_recognition_grpc.STYolo/SetConfig",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(STYoloServer).SetConfig(ctx, req.(*Config))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 var _STYolo_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "plates_recognition_grpc.STYolo",
 	HandlerType: (*STYoloServer)(nil),
@@ -585,18 +321,7 @@ var _STYolo_serviceDesc = grpc.ServiceDesc{
 			MethodName: "SendDetection",
 			Handler:    _STYolo_SendDetection_Handler,
 		},
-		{
-			MethodName: "SetConfig",
-			Handler:    _STYolo_SetConfig_Handler,
-		},
 	},
-	Streams: []grpc.StreamDesc{
-		{
-			StreamName:    "ConfigUpdater",
-			Handler:       _STYolo_ConfigUpdater_Handler,
-			ServerStreams: true,
-			ClientStreams: true,
-		},
-	},
+	Streams:  []grpc.StreamDesc{},
 	Metadata: "yolo_grpc.proto",
 }
