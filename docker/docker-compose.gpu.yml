@@ -3,9 +3,9 @@ version: '3.7'
 services:
 
    sidekiq: &base
-     image: license-plate-recognition:server-cpu
+     image: license-plate-recognition:server-gpu
      build:
-       context: ./cpu
+       context: ./gpu
        dockerfile: Dockerfile.server
      volumes:
      - ./scripts:/scripts
@@ -20,9 +20,9 @@ services:
      command: ["server", "--port=50051", "--platesConfig=/models/data/license_plates_inference.cfg", "--platesWeights=/models/data/license_plates_15000.weights", "--ocrConfig=/models/data/ocr_plates_inference.cfg", "--ocrWeights=/models/data/ocr_plates_7000.weights", "--saveDetected", "1"]
 
    client:
-     image: license-plate-recognition:client-cpu
+     image: license-plate-recognition:client-gpu
      build:
-       context: ./cpu
+       context: ./gpu
        dockerfile: Dockerfile.client
      depends_on:
      - server
