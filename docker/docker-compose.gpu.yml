@@ -1,0 +1,38 @@
+---
+version: '3.7'
+services:
+
+   sidekiq: &base
+     image: license-plate-recognition:server-gpu
+     build:
+       context: ./gpu
+       dockerfile: Dockerfile.server
+     volumes:
+     - ./scripts:/scripts
+     - models-data:/models
+     - ./detected:/go/bin/detected
+     command: /scripts/download_data_RU.sh     
+
+   server:
+     <<: *base     
+     ports:
+     - 50051:50051
+     command: ["server", "--port=50051", "--platesConfig=/models/data/license_plates_inference.cfg", "--platesWeights=/models/data/license_plates_15000.weights", "--ocrConfig=/models/data/ocr_plates_inference.cfg", "--ocrWeights=/models/data/ocr_plates_7000.weights", "--saveDetected", "1"]
+
+   client:
+     image: license-plate-recognition:client-gpu
+     build:
+       context: ./gpu
+       dockerfile: Dockerfile.client
+     depends_on:
+     - server
+     volumes:
+     - ./sample.jpg:/images/sample.jpg
+     command: ["client", "--host=server", "--port=50051", "--file=/images/sample.jpg", "-x", "0", "-y", "0", "--width=4032", "--height=3024"]
+
+volumes:
+  models-data:
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/models
