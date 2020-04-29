@@ -103,6 +103,20 @@ func (rs *RecognitionServer) WaitFrames() {
 			select {
 			case n := <-rs.framesQueue:
 				// fmt.Println("img of size", n.Bounds().Dx(), n.Bounds().Dy())
+
+				fname := fmt.Sprintf("./detected/%s_%s_%.0f.jpeg", "meme", time.Now().Format("2006-01-02T15-04-05"), 3.25)
+				f, err := os.Create(fname)
+				if err != nil {
+					fmt.Println(err)
+					// rs.resp <- &ServerResponse{nil, err}
+				}
+				defer f.Close()
+				err = jpeg.Encode(f, n, nil)
+				if err != nil {
+					fmt.Println(err)
+					// rs.resp <- &ServerResponse{nil, err}
+				}
+
 				resp, err := rs.netW.ReadLicensePlates(n, true)
 
 				if *saveDetectedConfig != 0 {
