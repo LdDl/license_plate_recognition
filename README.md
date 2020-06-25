@@ -8,6 +8,7 @@
     - [Get source code](#get-source-code)
     - [Protobuf generation](#generate-protobuf-*.go-files-for-Go-server-and-Go-client)
     - [Neural net weights](#download-weights-and-configuration)
+    - [Custom handler](#custom-handler)
 - [Usage](#usage)
     - [Server](#start-server)
     - [Client](#test-client-server)
@@ -61,6 +62,27 @@ protoc -I . yolo_grpc.proto --go_out=plugins=grpc:.
 cd cmd/
 chmod +x download_data_RU.sh
 ./download_data_RU.sh
+```
+
+### Custom Handler
+Do not forget (if needed) to implement [AfterFunc](https://github.com/LdDl/license_plate_recognition/blob/master/cmd/server/main.go#L93)
+
+Example is below:
+```go
+....
+rs := &RecognitionServer{
+    ....
+    AfterFunction: doSomeStuff,
+}
+....
+func doSomeStuff(data *PlateInfo, fileContents []byte) error {
+	/*
+		If you want, you can implement this function by yourself (and you can wrap this function also)
+		Default behaviour: do nothing.
+	*/
+	return nil
+}
+....
 ```
 
 ## Usage
