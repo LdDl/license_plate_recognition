@@ -1,4 +1,4 @@
-# License Plate Recognition with [go-darknet](https://github.com/LdDl/go-darknet)
+# License Plate Recognition with [go-darknet](https://github.com/LdDl/go-darknet) [![GoDoc](https://godoc.org/github.com/golang/gddo?status.svg)](https://godoc.org/github.com/LdDl/license_plate_recognition) [![Sourcegraph](https://sourcegraph.com/github.com/LdDl/license_plate_recognition/-/badge.svg)](https://sourcegraph.com/github.com/LdDl/license_plate_recognition?badge) [![Go Report Card](https://goreportcard.com/badge/github.com/LdDl/license_plate_recognition)](https://goreportcard.com/report/github.com/LdDl/license_plate_recognition) [![GitHub tag](https://img.shields.io/github/tag/LdDl/license_plate_recognition.svg)](https://github.com/LdDl/license_plate_recognition/releases)
 
 ## Table of Contents
 
