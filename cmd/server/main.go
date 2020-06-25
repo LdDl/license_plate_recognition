@@ -7,10 +7,10 @@ import (
 	"fmt"
 	"image"
 	"image/jpeg"
+	engine "license_plate_recognition"
 	"log"
 	"net"
 	"os"
-	engine "plates_recognition_grpc"
 	"time"
 
 	"github.com/disintegration/imaging"
@@ -56,10 +56,11 @@ func main() {
 
 	// Init servers
 	rs := &RecognitionServer{
-		netW:        netw,
-		framesQueue: make(chan *image.NRGBA, *framesLimitConfig),
-		maxLen:      *framesLimitConfig,
-		resp:        make(chan *ServerResponse, *framesLimitConfig),
+		netW:          netw,
+		framesQueue:   make(chan *vehicleInfo, *framesLimitConfig),
+		maxLen:        *framesLimitConfig,
+		resp:          make(chan *ServerResponse, *framesLimitConfig),
+		AfterFunction: doSomeStuff,
 	}
 	// Init neural network's queue
 	rs.WaitFrames()
@@ -81,21 +82,24 @@ func main() {
 
 }
 
+// RecognitionServer Wrapper around engine.STYoloServer
 type RecognitionServer struct {
-	engine.UnimplementedSTYoloServer
-	netW *engine.YOLONetwork
-
-	framesQueue chan *image.NRGBA
+	engine.STYoloServer
+	netW        *engine.YOLONetwork
+	framesQueue chan *vehicleInfo
 	maxLen      int
+	resp        chan *ServerResponse
 
-	resp chan *ServerResponse
+	AfterFunction func(data *PlateInfo, fileContents []byte) error
 }
 
+// ServerResponse Response from server
 type ServerResponse struct {
 	Resp  *engine.YOLOResponse
 	Error error
 }
 
+// WaitFrames Endless loop for waiting frames
 func (rs *RecognitionServer) WaitFrames() {
 	fmt.Println("YOLO networks waiting for frames now")
 	go func() {
@@ -103,22 +107,38 @@ func (rs *RecognitionServer) WaitFrames() {
 			select {
 			case n := <-rs.framesQueue:
 				// fmt.Println("img of size", n.Bounds().Dx(), n.Bounds().Dy())
-				resp, err := rs.netW.ReadLicensePlates(n, true)
+				resp, err := rs.netW.ReadLicensePlates(n.img, true)
 
 				if *saveDetectedConfig != 0 {
 					for i := range resp.Plates {
 						fname := fmt.Sprintf("./detected/%s_%s_%.0f.jpeg", resp.Plates[i].Text, time.Now().Format("2006-01-02T15-04-05"), resp.Plates[i].Probability)
 						f, err := os.Create(fname)
 						if err != nil {
-							fmt.Println(err)
-							// rs.resp <- &ServerResponse{nil, err}
+							fmt.Println("Can't create file:", err)
+							continue
 						}
 						defer f.Close()
 
 						err = jpeg.Encode(f, resp.Plates[i].CroppedNumber, nil)
 						if err != nil {
-							fmt.Println(err)
-							// rs.resp <- &ServerResponse{nil, err}
+							fmt.Println("Can't encode JPEG:", err)
+							continue
+						}
+
+						if resp.Plates[i].Text != "" {
+							dplat := PlateInfo{
+								CameraID: n.cameraID,
+								Text:     resp.Plates[i].Text,
+								Time:     time.Now().UTC().Format("2006-01-02T15:04:05"),
+							}
+							copyBuff := new(bytes.Buffer)
+							err = jpeg.Encode(copyBuff, resp.Plates[i].CroppedNumber, nil)
+							fileContents := copyBuff.Bytes()
+							err := rs.AfterFunction(&dplat, fileContents)
+							if err != nil {
+								fmt.Println("Can't exectude AfterFunction:", err)
+								continue
+							}
 						}
 
 					}
@@ -127,17 +147,23 @@ func (rs *RecognitionServer) WaitFrames() {
 				rs.resp <- &ServerResponse{resp, err}
 				continue
 			}
-			time.Sleep(100 * time.Millisecond)
 		}
 	}()
 }
 
-func (rs *RecognitionServer) SendToQueue(n *image.NRGBA) {
+// SendToQueue Add element to queue
+func (rs *RecognitionServer) SendToQueue(n *vehicleInfo) {
 	if len(rs.framesQueue) < rs.maxLen {
 		rs.framesQueue <- n
 	}
 }
 
+type vehicleInfo struct {
+	cameraID string
+	img      *image.NRGBA
+}
+
+// SendDetection Imeplented function or accepting image
 func (rs *RecognitionServer) SendDetection(ctx context.Context, in *engine.CamInfo) (*engine.Response, error) {
 	imgBytes := in.GetImage()
 	imgReader := bytes.NewReader(imgBytes)
@@ -180,7 +206,11 @@ func (rs *RecognitionServer) SendDetection(ctx context.Context, in *engine.CamIn
 	vehicleBBox := image.Rect(xl, yt, bbw, bbh)
 	vehicleImg := imaging.Crop(stdImage, vehicleBBox)
 
-	rs.SendToQueue(vehicleImg)
+	inf := vehicleInfo{
+		cameraID: in.CamId,
+		img:      vehicleImg,
+	}
+	rs.SendToQueue(&inf)
 
 	response := <-rs.resp
 	log.Println(response.Resp.String())
@@ -188,4 +218,19 @@ func (rs *RecognitionServer) SendDetection(ctx context.Context, in *engine.CamIn
 		return &engine.Response{Message: "error", Warning: response.Error.Error()}, nil
 	}
 	return &engine.Response{Message: "ok", Warning: ""}, nil
+}
+
+// PlateInfo Information about license plate
+type PlateInfo struct {
+	CameraID string `json:"camera_id" example:"f2abe45e-aad8-40a2-a3b7-0c610c0f3dda"`
+	Text     string `json:"text" example:"a777aa77"`
+	Time     string `json:"tm" example:"2020-04-30T00:00:00"`
+}
+
+func doSomeStuff(data *PlateInfo, fileContents []byte) error {
+	/*
+		If you want, you can implement this function by yourself (and you can wrap this function also)
+		Default behaviour: do nothing.
+	*/
+	return nil
 }

@@ -1,8 +1,3 @@
-# WORK IN PROGRESS. DO NOT USE IT IN PRODUCTION
-# NEED TO MAKE MORE DOCS
-# NEED MAKE IT CLEAR
-# NEED TO UPDATE CODEBASE AND SERVER RESPONSES
-
 ## Table of Contents
 
 - [About](#about)
@@ -17,7 +12,14 @@
 
 
 ## About
-We are target to do gRPC server which accepts this struct:
+This is a gRPC server which accepts image and can make license plate recognition (using YOLOv3 or YOLOv4 neural network).
+
+First server tries to find license plate. Then it does OCR (if it's possible).
+
+Neural networks were trained on dataset of russian license plates. But you can train it on another dataset - read about process here https://github.com/AlexeyAB/darknet#how-to-train-to-detect-your-custom-objects
+
+
+gRPC server accepts this data struct:
 ```protobuf
 message CamInfo{
     string cam_id = 1; // id of camera (just to identify client app)
@@ -32,7 +34,6 @@ message Detection{
     int32 width = 4;
 }
 ```
-and can store detected license plates into filesystem with this filename layout "PLATE-NUMBER_TIMESTAMP_Deviation.jpeg"
 
 ## Requirements
 Please follow instructions from [go-darknet](https://github.com/LdDl/go-darknet#go-darknet-go-bindings-for-darknet). There you will know how to install [AlexeyAB's darknet](https://github.com/AlexeyAB/darknet) and [Go-binding](https://github.com/LdDl/go-darknet) for it.
@@ -95,3 +96,11 @@ chmod +x download_data_RU.sh
     ./client_app --host=localhost --port=50051 --file=sample.jpg -x 0 -y 0 --width=42 --height=-24
     ```
 
+* On server's side there will be output something like this:
+    ```shell
+    Elapsed to find plate and read symbols: 64.122504ms
+    2020/06/25 12:17:16 License plate #0:
+            Text: T123AK77
+            Deviation (for detected symbols): 8.685173
+            Rectangle's borders: (x1,y1)-(x2,y2)
+    ```

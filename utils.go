@@ -1,4 +1,4 @@
-package plates_recognition_grpc
+package license_plate_recognition
 
 import (
 	"bytes"

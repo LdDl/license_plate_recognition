@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"image"
 	"image/jpeg"
+	engine "license_plate_recognition"
 	"log"
 	"os"
-	engine "plates_recognition_grpc"
 	"time"
 
 	"google.golang.org/grpc"
