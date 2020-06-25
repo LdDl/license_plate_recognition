@@ -111,6 +111,11 @@ func (rs *RecognitionServer) WaitFrames() {
 
 				if *saveDetectedConfig != 0 {
 					for i := range resp.Plates {
+						err := ensureDir("./detected")
+						if err != nil {
+							fmt.Println("Can't check or create directory './detected':", err)
+							continue
+						}
 						fname := fmt.Sprintf("./detected/%s_%s_%.0f.jpeg", resp.Plates[i].Text, time.Now().Format("2006-01-02T15-04-05"), resp.Plates[i].Probability)
 						f, err := os.Create(fname)
 						if err != nil {
@@ -218,6 +223,14 @@ func (rs *RecognitionServer) SendDetection(ctx context.Context, in *engine.CamIn
 		return &engine.Response{Message: "error", Warning: response.Error.Error()}, nil
 	}
 	return &engine.Response{Message: "ok", Warning: ""}, nil
+}
+
+func ensureDir(dirName string) error {
+	err := os.MkdirAll(dirName, 0777)
+	if err == nil || os.IsExist(err) {
+		return nil
+	}
+	return err
 }
 
 // PlateInfo Information about license plate

@@ -98,9 +98,16 @@ chmod +x download_data_RU.sh
 
 * On server's side there will be output something like this:
     ```shell
-    Elapsed to find plate and read symbols: 64.122504ms
-    2020/06/25 12:17:16 License plate #0:
-            Text: T123AK77
-            Deviation (for detected symbols): 8.685173
-            Rectangle's borders: (x1,y1)-(x2,y2)
+    2020/06/25 15:31:57
+    License plate #0:
+        Text: M288HO199
+        Deviation (for detected symbols): 1.808632
+        Rectangle's borders: (295,1057)-(608,1204)
+    License plate #1:
+        Text: A100CX777
+        Deviation (for detected symbols): 2.295539
+        Rectangle's borders: (2049,1384)-(2582,1618)
+    Elapsed to find plate and read symbols: 372.108605ms
     ```
+* On server's side the directory './detected' will appear also. Detected license plates will be stored there.
+
