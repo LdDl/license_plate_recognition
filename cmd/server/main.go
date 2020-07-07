@@ -7,12 +7,13 @@ import (
 	"fmt"
 	"image"
 	"image/jpeg"
-	engine "license_plate_recognition"
 	"log"
 	"net"
 	"os"
 	"time"
 
+	engine "github.com/LdDl/license_plate_recognition"
+	grpc_server "github.com/LdDl/odam"
 	"github.com/disintegration/imaging"
 	"google.golang.org/grpc"
 )
@@ -69,7 +70,7 @@ func main() {
 	grpcInstance := grpc.NewServer()
 
 	// Register servers
-	engine.RegisterSTYoloServer(
+	grpc_server.RegisterSTYoloServer(
 		grpcInstance,
 		rs,
 	)
@@ -84,7 +85,7 @@ func main() {
 
 // RecognitionServer Wrapper around engine.STYoloServer
 type RecognitionServer struct {
-	engine.STYoloServer
+	grpc_server.STYoloServer
 	netW        *engine.YOLONetwork
 	framesQueue chan *vehicleInfo
 	maxLen      int
@@ -169,13 +170,13 @@ type vehicleInfo struct {
 }
 
 // SendDetection Imeplented function or accepting image
-func (rs *RecognitionServer) SendDetection(ctx context.Context, in *engine.CamInfo) (*engine.Response, error) {
+func (rs *RecognitionServer) SendDetection(ctx context.Context, in *grpc_server.CamInfo) (*grpc_server.Response, error) {
 	imgBytes := in.GetImage()
 	imgReader := bytes.NewReader(imgBytes)
 
 	stdImage, _, err := image.Decode(imgReader)
 	if err != nil {
-		return &engine.Response{Error: "Image decoding failed"}, err
+		return &grpc_server.Response{Error: "Image decoding failed"}, err
 	}
 
 	height := stdImage.Bounds().Dy()
@@ -187,7 +188,7 @@ func (rs *RecognitionServer) SendDetection(ctx context.Context, in *engine.CamIn
 	dh := int(det.GetHeight())
 	dw := int(det.GetWidth())
 	if dw <= 0 || dh <= 0 || xl >= width || yt >= height {
-		return &engine.Response{Error: "Incorrect bounding box of a car"}, nil
+		return &grpc_server.Response{Error: "Incorrect bounding box of a car"}, nil
 	}
 
 	bbw := xl + dw
@@ -220,9 +221,9 @@ func (rs *RecognitionServer) SendDetection(ctx context.Context, in *engine.CamIn
 	response := <-rs.resp
 	log.Println(response.Resp.String())
 	if response.Error != nil {
-		return &engine.Response{Message: "error", Warning: response.Error.Error()}, nil
+		return &grpc_server.Response{Message: "error", Warning: response.Error.Error()}, nil
 	}
-	return &engine.Response{Message: "ok", Warning: ""}, nil
+	return &grpc_server.Response{Message: "ok", Warning: ""}, nil
 }
 
 func ensureDir(dirName string) error {
