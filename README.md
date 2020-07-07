@@ -29,12 +29,20 @@ message CamInfo{
     int64 timestamp = 2; // timestamp of vehicle fixation (on client app)
     bytes image = 3; // bytes of full image in PNG-format
     Detection detection = 4; // BBox of detected vehicle (region of interest where License Plate Recognition is needed)
+    VirtualLineInfo virtual_line = 5; // Line which detected object has been crossed (not necessary field, but helpfull for real-time detection on road traffic)
 }
 message Detection{
     int32 x_left = 1;
     int32 y_top = 2;
     int32 height = 3;
     int32 width = 4;
+}
+message VirtualLineInfo{
+    int32 id = 1;
+    int32 left_x = 2;
+    int32 left_y = 3;
+    int32 right_x = 4;
+    int32 right_y = 5;
 }
 ```
 
