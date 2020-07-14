@@ -59,11 +59,6 @@ Please follow instructions from [google/protobuff](https://github.com/golang/pro
 go get https://github.com/LdDl/license_plate_recognition
 ```
 
-### Generate protobuf *.go files for Go-server and Go-client
-```shell
-protoc -I . yolo_grpc.proto --go_out=plugins=grpc:.
-```
-
 ### Download weights and configuration
 **Notice: please read [source code of *.sh script](cmd/download_data_RU.sh) before downloading. This script MAY NOT fit yours needs.**
 ```shell
