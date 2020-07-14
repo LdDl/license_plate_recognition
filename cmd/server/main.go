@@ -133,7 +133,7 @@ func (rs *RecognitionServer) WaitFrames() {
 
 						if resp.Plates[i].Text != "" {
 							dplat := PlateInfo{
-								CameraID: n.cameraID,
+								CameraID: n.imageInfo.CamId,
 								Text:     resp.Plates[i].Text,
 								Time:     time.Now().UTC().Format("2006-01-02T15:04:05"),
 							}
@@ -165,12 +165,13 @@ func (rs *RecognitionServer) SendToQueue(n *vehicleInfo) {
 }
 
 type vehicleInfo struct {
-	cameraID string
-	img      *image.NRGBA
+	imageInfo *grpc_server.CamInfo
+	img       *image.NRGBA
 }
 
 // SendDetection Imeplented function or accepting image
 func (rs *RecognitionServer) SendDetection(ctx context.Context, in *grpc_server.CamInfo) (*grpc_server.Response, error) {
+
 	imgBytes := in.GetImage()
 	imgReader := bytes.NewReader(imgBytes)
 
@@ -213,8 +214,8 @@ func (rs *RecognitionServer) SendDetection(ctx context.Context, in *grpc_server.
 	vehicleImg := imaging.Crop(stdImage, vehicleBBox)
 
 	inf := vehicleInfo{
-		cameraID: in.CamId,
-		img:      vehicleImg,
+		imageInfo: in,
+		img:       vehicleImg,
 	}
 	rs.SendToQueue(&inf)
 
