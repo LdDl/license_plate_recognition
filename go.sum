@@ -2,6 +2,8 @@ cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMT
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/LdDl/go-darknet v1.1.0 h1:oWz93jTcAv060dngpEgVtN9TeX5+KDTdB9Aef1CnBxI=
 github.com/LdDl/go-darknet v1.1.0/go.mod h1:vNpwlxHd2mevaqWDYG9r/ABi1+cQrXw0HUuSPaDKuD8=
+github.com/LdDl/go-darknet v1.2.0 h1:Gglytog/tVUJB+5FP8/dPSOXCVM5lyzzXgYJ/GBMvxc=
+github.com/LdDl/go-darknet v1.2.0/go.mod h1:vNpwlxHd2mevaqWDYG9r/ABi1+cQrXw0HUuSPaDKuD8=
 github.com/LdDl/gocv-blob v1.0.1 h1:BowqNyVrkN7W//N9+rkVYGWiMjd82UnzFhYlJt3cxHc=
 github.com/LdDl/gocv-blob v1.0.1/go.mod h1:PdvuCxFbzOgjuz81sVmq4FzZ4GJ7xVpP3narVHe5nio=
 github.com/LdDl/odam v0.1.0 h1:bcazpbwiuHwTpznSPE8TSlhgv1aYG42FZrEBY5NulHo=

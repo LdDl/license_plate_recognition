@@ -3,7 +3,7 @@ module github.com/LdDl/license_plate_recognition
 go 1.14
 
 require (
-	github.com/LdDl/go-darknet v1.1.0
+	github.com/LdDl/go-darknet v1.2.0
 	github.com/LdDl/gocv-blob v1.0.1 // indirect
 	github.com/LdDl/odam v0.4.1
 	github.com/disintegration/imaging v1.6.2
