@@ -70,7 +70,7 @@ func main() {
 	grpcInstance := grpc.NewServer()
 
 	// Register servers
-	grpc_server.RegisterSTYoloServer(
+	grpc_server.RegisterServiceYOLOServer(
 		grpcInstance,
 		rs,
 	)
@@ -83,9 +83,9 @@ func main() {
 
 }
 
-// RecognitionServer Wrapper around engine.STYoloServer
+// RecognitionServer Wrapper around engine.ServiceYOLOServer
 type RecognitionServer struct {
-	grpc_server.STYoloServer
+	grpc_server.ServiceYOLOServer
 	netW        *engine.YOLONetwork
 	framesQueue chan *vehicleInfo
 	maxLen      int
@@ -165,12 +165,12 @@ func (rs *RecognitionServer) SendToQueue(n *vehicleInfo) {
 }
 
 type vehicleInfo struct {
-	imageInfo *grpc_server.CamInfo
+	imageInfo *grpc_server.ObjectInformation
 	img       *image.NRGBA
 }
 
 // SendDetection Imeplented function or accepting image
-func (rs *RecognitionServer) SendDetection(ctx context.Context, in *grpc_server.CamInfo) (*grpc_server.Response, error) {
+func (rs *RecognitionServer) SendDetection(ctx context.Context, in *grpc_server.ObjectInformation) (*grpc_server.Response, error) {
 
 	imgBytes := in.GetImage()
 	imgReader := bytes.NewReader(imgBytes)

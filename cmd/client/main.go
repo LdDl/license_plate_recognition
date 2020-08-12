@@ -7,10 +7,11 @@ import (
 	"fmt"
 	"image"
 	"image/jpeg"
-	engine "license_plate_recognition"
 	"log"
 	"os"
 	"time"
+
+	engine "github.com/LdDl/odam"
 
 	"google.golang.org/grpc"
 )
@@ -61,17 +62,21 @@ func main() {
 	defer conn.Close()
 
 	// Init gRPC client
-	client := engine.NewSTYoloClient(conn)
+	client := engine.NewServiceYOLOClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
 	// Send message to gRPC server
 	r, err := client.SendDetection(
 		ctx,
-		&engine.CamInfo{
+		&engine.ObjectInformation{
 			CamId:     "my_new_uuid",
 			Timestamp: time.Now().Unix(),
 			Image:     sendS3,
+			Class: &engine.ClassInfo{
+				ClassId:   100,
+				ClassName: "find_ocr",
+			},
 			Detection: &engine.Detection{
 				XLeft:  int32(*xConfig),
 				YTop:   int32(*yConfig),
