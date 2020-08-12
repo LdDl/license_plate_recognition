@@ -6,6 +6,8 @@ github.com/LdDl/go-darknet v1.2.0 h1:Gglytog/tVUJB+5FP8/dPSOXCVM5lyzzXgYJ/GBMvxc
 github.com/LdDl/go-darknet v1.2.0/go.mod h1:vNpwlxHd2mevaqWDYG9r/ABi1+cQrXw0HUuSPaDKuD8=
 github.com/LdDl/gocv-blob v1.0.1 h1:BowqNyVrkN7W//N9+rkVYGWiMjd82UnzFhYlJt3cxHc=
 github.com/LdDl/gocv-blob v1.0.1/go.mod h1:PdvuCxFbzOgjuz81sVmq4FzZ4GJ7xVpP3narVHe5nio=
+github.com/LdDl/gocv-blob v1.1.2 h1:GcaW/Syj5mpblY8RQ8elURBtjbmElwbDDek57/Ga77o=
+github.com/LdDl/gocv-blob v1.1.2/go.mod h1:PdvuCxFbzOgjuz81sVmq4FzZ4GJ7xVpP3narVHe5nio=
 github.com/LdDl/odam v0.1.0 h1:bcazpbwiuHwTpznSPE8TSlhgv1aYG42FZrEBY5NulHo=
 github.com/LdDl/odam v0.1.0/go.mod h1:7DiFwy7yNK0DR2Afoo7YDjq0C4L03TrHtIieeEc6ydQ=
 github.com/LdDl/odam v0.2.0 h1:u1O6abC0lKuJX7iUIJPsrfIbEjrrwN7ard26jT2bsgE=
@@ -20,6 +22,8 @@ github.com/LdDl/odam v0.4.1 h1:MWxRZp58A6/Xf+w7/5lc5t4RTdBQqJkkWYusF7GrjCo=
 github.com/LdDl/odam v0.4.1/go.mod h1:K1STBUV4Wg2fqfpfepSWE+ucdiW5FQH5Z3RMWp1G9Io=
 github.com/LdDl/odam v0.4.2 h1:/tX+2MPqD/u3Ps94KwqkNl86SVJ17nYxwDKfyuvYPR8=
 github.com/LdDl/odam v0.4.2/go.mod h1:EDT1e++oP0tQ2LSMH/UYe1qY34d2lt40RKNLXm31Lgk=
+github.com/LdDl/odam v0.4.3 h1:RGMhD5Ss89+itO8OGkfMFul4OHKK3ILKGXZOeF8pHew=
+github.com/LdDl/odam v0.4.3/go.mod h1:KQNFzXv7eBsVITOGkmwkuPF4RRvk8jbmNRJN0cH1+/4=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
 github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDkc90ppPyw=
 github.com/cncf/udpa/go v0.0.0-20191209042840-269d4d468f6f/go.mod h1:M8M6+tZqaGXZJjfX53e64911xZQV5JYwmTeXPW+k8Sc=
