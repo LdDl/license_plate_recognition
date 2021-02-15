@@ -12,13 +12,13 @@ wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download
 ## Don't forget to add [names] to *.cfg file. It's needed for AlexeyAB's fork
 sed -i -e "\$anames = ../data/license_plates.names" data/license_plates_inference.cfg
 
-# ocr weights
-wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1WQwWuYfiU8ZxFEqDoZvH2bKUBUw797U9' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1WQwWuYfiU8ZxFEqDoZvH2bKUBUw797U9" -O data/ocr_plates_7000.weights && rm -rf /tmp/cookies.txt
+# ocr weights (YOLO v4)
+wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1MZ2ii0hQmKpIcwj3Mfh5DOBnlmV7KL5T' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1MZ2ii0hQmKpIcwj3Mfh5DOBnlmV7KL5T" -O data/ocr_plates_140000.weights && rm -rf /tmp/cookies.txt
 
-# ocr names (there are 22 possible symbols in Russian license plates)
-wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1SLPw1zT_WwwN46mg2ttQv5DIl5HEZRNj' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1SLPw1zT_WwwN46mg2ttQv5DIl5HEZRNj" -O data/ocr_plates.names && rm -rf /tmp/cookies.txt
+# ocr names (YOLO v4, there are 22 possible symbols in Russian license plates)
+wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1654bphBaeQ6LJUZJO_NthPMNpp4oJXQA' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1654bphBaeQ6LJUZJO_NthPMNpp4oJXQA" -O data/ocr_plates.names && rm -rf /tmp/cookies.txt
 
-# ocr inference cfg
-wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1KQvN6l1G0OxyJj__YXgeYyAWxlEqzvfz' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1KQvN6l1G0OxyJj__YXgeYyAWxlEqzvfz" -O data/ocr_plates_inference.cfg && rm -rf /tmp/cookies.txt
+# ocr inference cfg (YOLO v4)
+wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1d-IdpviI8imGHJYmGz8C33KHSLBvUBZo' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1d-IdpviI8imGHJYmGz8C33KHSLBvUBZo" -O data/ocr_plates_inference.cfg && rm -rf /tmp/cookies.txt
 ## Again: don't forget to add [names] to *.cfg file. It's needed for AlexeyAB's fork
 sed -i -e "\$anames = ../data/ocr_plates.names" data/ocr_plates_inference.cfg

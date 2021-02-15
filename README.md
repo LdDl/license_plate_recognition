@@ -21,6 +21,8 @@ First server tries to find license plate. Then it does OCR (if it's possible).
 
 Neural networks were trained on dataset of russian license plates. But you can train it on another dataset - read about process here https://github.com/AlexeyAB/darknet#how-to-train-to-detect-your-custom-objects
 
+Darknet architecture for finding license plates - [Yolo V3](https://arxiv.org/abs/1804.02767)
+Darknet architecture for doing OCR stuff - [Yolo V4](https://arxiv.org/abs/2004.10934)
 
 gRPC server accepts this data struct:
 ```protobuf
