@@ -83,6 +83,10 @@ func main() {
 				Width:  int32(*widthConfig),
 				Height: int32(*heightConfig),
 			},
+			// Skip virtual line part (not needed)
+			VirtualLine: &engine.VirtualLineInfo{},
+			// Skip tracking info part (not needed)
+			TrackInformation: &engine.TrackInfo{},
 		},
 	)
 	if err != nil {
