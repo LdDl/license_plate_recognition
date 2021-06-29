@@ -103,7 +103,7 @@ func doSomeStuff(data *PlateInfo, fileContents []byte) error {
     ```
 * Run server application
     ```shell
-    ./recognition_server --port=50051 --platesConfig=../data/license_plates_inference.cfg --platesWeights=../data/license_plates_15000.weights --ocrConfig=../data/ocr_plates_inference.cfg --ocrWeights=../data/ocr_plates_140000.weights --saveDetected 1
+    ./recognition_server --port=50051 --platesConfig=../data/license_plates_inference.cfg --platesWeights=../data/license_plates_100000.weights --ocrConfig=../data/ocr_plates_inference.cfg --ocrWeights=../data/ocr_plates_140000.weights --saveDetected 1
     ```
 
 ### Test Client-Server

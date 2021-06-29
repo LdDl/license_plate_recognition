@@ -109,7 +109,6 @@ func (rs *RecognitionServer) WaitFrames() {
 			case n := <-rs.framesQueue:
 				// fmt.Println("img of size", n.Bounds().Dx(), n.Bounds().Dy())
 				resp, err := rs.netW.ReadLicensePlates(n.img, true)
-
 				if *saveDetectedConfig != 0 {
 					for i := range resp.Plates {
 						err := ensureDir("./detected")
