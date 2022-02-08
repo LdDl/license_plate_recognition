@@ -25,7 +25,7 @@ Darknet architecture for finding license plates - [Yolo V3](https://arxiv.org/ab
 
 Darknet architecture for doing OCR stuff - [Yolo V4](https://arxiv.org/abs/2004.10934)
 
-gRPC server accepts this data struct:
+gRPC server accepts this data struct accordion to [ODaM specification](https://github.com/LdDl/odam/blob/master/yolo_grpc.proto):
 ```protobuf
 message CamInfo{
     string cam_id = 1; // id of camera (just to identify client app)
@@ -51,8 +51,6 @@ message VirtualLineInfo{
 
 ## Requirements
 Please follow instructions from [go-darknet](https://github.com/LdDl/go-darknet#go-darknet-go-bindings-for-darknet). There you will know how to install [AlexeyAB's darknet](https://github.com/AlexeyAB/darknet) and [Go-binding](https://github.com/LdDl/go-darknet) for it.
-
-Please follow instructions from [google/protobuff](https://github.com/golang/protobuf) for installing protobuf for Go-ecosystem.
 
 ## Instalation
 
