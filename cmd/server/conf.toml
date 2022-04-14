@@ -1,0 +1,21 @@
+[server]
+# gRPC server parameters
+host = "0.0.0.0"
+port = 50051
+# Store detected object to filesytem?
+save_detected = true
+# Limitting recognition queue
+queue_limit = 200
+
+[yolo_plates]
+# Path to LICENSE PLATES network layer configuration file
+cfg = "../data/license_plates_inference.cfg"
+# Path to weights file
+weights = "../data/license_plates_15000.weights"
+
+
+[yolo_ocr]
+# Path to OCR network layer configuration file
+cfg = "../data/ocr_plates_inference.cfg"
+# Path to weights file
+weights = "../data/ocr_plates_140000.weights"

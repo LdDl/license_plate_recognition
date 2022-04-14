@@ -12,6 +12,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/BurntSushi/toml"
 	engine "github.com/LdDl/license_plate_recognition"
 	grpc_server "github.com/LdDl/odam"
 	"github.com/disintegration/imaging"
@@ -19,48 +20,44 @@ import (
 )
 
 var (
-	// License plates
-	platesConfig  = flag.String("platesConfig", "../data/license_plates_inference.cfg", "Path to LICENSE_PLATES network layer configuration file. Example: yolov3-plates.cfg")
-	platesWeights = flag.String("platesWeights", "../data/license_plates_15000.weights", "Path to weights file. Example: yolov3-plates.weights")
-
-	// OCR
-	ocrConfig  = flag.String("ocrConfig", "../data/ocr_plates_inference.cfg", "Path to OCR network layer configuration file. Example: yolov3-ocr.cfg")
-	ocrWeights = flag.String("ocrWeights", "../data/ocr_plates_140000.weights", "Path to weights file. Example: yolov3-ocr.weights")
-
-	// gRPC port
-	portConfig = flag.String("port", "50051", "Port to listen")
-
-	// frames limit in queue
-	framesLimitConfig = flag.Int("framesLimit", 200, "Max number of frames in queue")
-
-	// Store detected object to filesytem?
-	saveDetectedConfig = flag.Uint("saveDetected", 0, "Do you want to save detected objects into JPEG files?")
+	confFile = flag.String("cfg", "conf.toml", "Path to TOML configuration file")
 )
 
 func main() {
-	flag.Parse()
-	if *platesConfig == "" || *platesWeights == "" || *ocrConfig == "" || *ocrWeights == "" || *framesLimitConfig == 0 {
+
+	cfgBytes, err := os.ReadFile(*confFile)
+	if err != nil {
+		fmt.Println(err)
 		flag.Usage()
 		return
 	}
-
-	netw, err := engine.NewYOLONetwork(*platesConfig, *platesWeights, *ocrConfig, *ocrWeights)
+	var conf engine.Configuration
+	err = toml.Unmarshal(cfgBytes, &conf)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	netw, err := engine.NewYOLONetwork(conf.YOLOPlates.Cfg, conf.YOLOPlates.Weights, conf.YOLOOCR.Cfg, conf.YOLOOCR.Weights)
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	stdListener, err := net.Listen("tcp", "0.0.0.0:"+*portConfig)
+	stdListener, err := net.Listen("tcp", fmt.Sprintf("%s:%d", conf.ServerConf.Host, conf.ServerConf.Port))
 	if err != nil {
 		log.Fatal(err)
 		return
 	}
 
+	if conf.ServerConf.QueueLimit < 1 {
+		conf.ServerConf.QueueLimit = 1
+	}
 	// Init servers
 	rs := &RecognitionServer{
 		netW:          netw,
-		framesQueue:   make(chan *vehicleInfo, *framesLimitConfig),
-		maxLen:        *framesLimitConfig,
-		resp:          make(chan *ServerResponse, *framesLimitConfig),
+		framesQueue:   make(chan *vehicleInfo, conf.ServerConf.QueueLimit),
+		queueLimit:    conf.ServerConf.QueueLimit,
+		resp:          make(chan *ServerResponse, conf.ServerConf.QueueLimit),
+		saveDetected:  conf.ServerConf.SaveDetected,
 		AfterFunction: doSomeStuff,
 	}
 	// Init neural network's queue
@@ -86,11 +83,11 @@ func main() {
 // RecognitionServer Wrapper around engine.ServiceYOLOServer
 type RecognitionServer struct {
 	grpc_server.ServiceYOLOServer
-	netW        *engine.YOLONetwork
-	framesQueue chan *vehicleInfo
-	maxLen      int
-	resp        chan *ServerResponse
-
+	netW          *engine.YOLONetwork
+	framesQueue   chan *vehicleInfo
+	queueLimit    int
+	resp          chan *ServerResponse
+	saveDetected  bool
 	AfterFunction func(data *PlateInfo, fileContents []byte) error
 }
 
@@ -109,7 +106,8 @@ func (rs *RecognitionServer) WaitFrames() {
 			case n := <-rs.framesQueue:
 				// fmt.Println("img of size", n.Bounds().Dx(), n.Bounds().Dy())
 				resp, err := rs.netW.ReadLicensePlates(n.img, true)
-				if *saveDetectedConfig != 0 {
+
+				if rs.saveDetected {
 					for i := range resp.Plates {
 						err := ensureDir("./detected")
 						if err != nil {
@@ -158,7 +156,7 @@ func (rs *RecognitionServer) WaitFrames() {
 
 // SendToQueue Add element to queue
 func (rs *RecognitionServer) SendToQueue(n *vehicleInfo) {
-	if len(rs.framesQueue) < rs.maxLen {
+	if len(rs.framesQueue) < rs.queueLimit {
 		rs.framesQueue <- n
 	}
 }
