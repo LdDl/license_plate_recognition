@@ -11,7 +11,7 @@ queue_limit = 200
 # Path to LICENSE PLATES network layer configuration file
 cfg = "../data/license_plates_inference.cfg"
 # Path to weights file
-weights = "../data/license_plates_15000.weights"
+weights = "../data/license_plates_100000.weights"
 
 
 [yolo_ocr]

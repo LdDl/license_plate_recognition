@@ -26,7 +26,7 @@ func NewYOLONetwork(platesCfg, platesWeights, ocrCfg, ocrWeights string) (*YOLON
 		GPUDeviceIndex:           0,
 		WeightsFile:              ocrWeights,
 		NetworkConfigurationFile: ocrCfg,
-		Threshold:                0.3,
+		Threshold:                0.4,
 	}
 	if err := plates.Init(); err != nil {
 		return nil, err
