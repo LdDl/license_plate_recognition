@@ -25,6 +25,8 @@ Darknet architecture for finding license plates - [Yolo V3](https://arxiv.org/ab
 
 Darknet architecture for doing OCR stuff - [Yolo V4](https://arxiv.org/abs/2004.10934)
 
+No OpenCV installation is needed!
+
 gRPC server accepts this data struct accordion to [ODaM specification](https://github.com/LdDl/odam/blob/master/yolo_grpc.proto):
 ```protobuf
 message CamInfo{
