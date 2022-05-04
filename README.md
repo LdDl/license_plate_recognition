@@ -17,7 +17,7 @@
 ## About
 This is a gRPC server which accepts image and can make license plate recognition (using YOLOv3 or YOLOv4 neural network).
 
-First server tries to find license plate. Then it does OCR (if it's possible).
+Server tries to find license plate at first. Then it does OCR (if it's possible).
 
 Neural networks were trained on dataset of russian license plates. But you can train it on another dataset - read about process here https://github.com/AlexeyAB/darknet#how-to-train-to-detect-your-custom-objects
 
