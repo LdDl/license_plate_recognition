@@ -2,7 +2,6 @@ package license_plate_recognition
 
 import (
 	"image"
-
 	"github.com/LdDl/go-darknet"
 )
 
