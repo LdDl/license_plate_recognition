@@ -37,6 +37,12 @@ func main() {
 		fmt.Println(err)
 		return
 	}
+	if conf.YOLOPlates.Threshold <= 0.0 {
+		conf.YOLOPlates.Threshold = 0.2
+	}
+	if conf.YOLOOCR.Threshold <= 0.0 {
+		conf.YOLOOCR.Threshold = 0.3
+	}
 	netw, err := engine.NewYOLONetwork(conf.YOLOPlates.Cfg, conf.YOLOPlates.Weights, conf.YOLOOCR.Cfg, conf.YOLOOCR.Weights, conf.YOLOPlates.Threshold, conf.YOLOOCR.Threshold)
 	if err != nil {
 		log.Fatalln(err)
