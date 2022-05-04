@@ -12,6 +12,7 @@ queue_limit = 200
 cfg = "../data/license_plates_inference.cfg"
 # Path to weights file
 weights = "../data/license_plates_100000.weights"
+# Threshold should not be < 0.0
 threshold = 0.3
 
 [yolo_ocr]
@@ -19,4 +20,5 @@ threshold = 0.3
 cfg = "../data/ocr_plates_inference.cfg"
 # Path to weights file
 weights = "../data/ocr_plates_140000.weights"
+# Threshold should not be < 0.0
 threshold = 0.4
