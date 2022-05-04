@@ -14,6 +14,7 @@ type serverInstanceConfiguration struct {
 }
 
 type yoloConfiguration struct {
-	Cfg     string `toml:"cfg"`
-	Weights string `toml:"weights"`
+	Cfg       string  `toml:"cfg"`
+	Weights   string  `toml:"weights"`
+	Threshold float32 `toml:"threshold"`
 }

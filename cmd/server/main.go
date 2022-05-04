@@ -37,7 +37,7 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-	netw, err := engine.NewYOLONetwork(conf.YOLOPlates.Cfg, conf.YOLOPlates.Weights, conf.YOLOOCR.Cfg, conf.YOLOOCR.Weights)
+	netw, err := engine.NewYOLONetwork(conf.YOLOPlates.Cfg, conf.YOLOPlates.Weights, conf.YOLOOCR.Cfg, conf.YOLOOCR.Weights, conf.YOLOPlates.Threshold, conf.YOLOOCR.Threshold)
 	if err != nil {
 		log.Fatalln(err)
 	}

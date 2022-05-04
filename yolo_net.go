@@ -15,18 +15,18 @@ type YOLONetwork struct {
 }
 
 // NewYOLONetwork Return pointer to YOLONetwork
-func NewYOLONetwork(platesCfg, platesWeights, ocrCfg, ocrWeights string) (*YOLONetwork, error) {
+func NewYOLONetwork(platesCfg, platesWeights, ocrCfg, ocrWeights string, platesThreshold, ocrThreshold float32) (*YOLONetwork, error) {
 	plates := darknet.YOLONetwork{
 		GPUDeviceIndex:           0,
 		WeightsFile:              platesWeights,
 		NetworkConfigurationFile: platesCfg,
-		Threshold:                0.3,
+		Threshold:                platesThreshold,
 	}
 	ocr := darknet.YOLONetwork{
 		GPUDeviceIndex:           0,
 		WeightsFile:              ocrWeights,
 		NetworkConfigurationFile: ocrCfg,
-		Threshold:                0.4,
+		Threshold:                ocrThreshold,
 	}
 	if err := plates.Init(); err != nil {
 		return nil, err
