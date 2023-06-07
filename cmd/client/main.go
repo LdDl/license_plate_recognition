@@ -7,11 +7,12 @@ import (
 	"fmt"
 	"image"
 	"image/jpeg"
+	_ "image/png"
 	"log"
 	"os"
 	"time"
 
-	engine "github.com/LdDl/odam"
+	"github.com/LdDl/license_plate_recognition/service/rpc/protos"
 
 	"google.golang.org/grpc"
 )
@@ -50,6 +51,10 @@ func main() {
 
 	buf := new(bytes.Buffer)
 	err = jpeg.Encode(buf, imgIn, nil)
+	if err != nil {
+		log.Println(err)
+		return
+	}
 	sendS3 := buf.Bytes()
 
 	// Connect to gRPC
@@ -62,44 +67,33 @@ func main() {
 	defer conn.Close()
 
 	// Init gRPC client
-	client := engine.NewServiceYOLOClient(conn)
-	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	client := protos.NewServiceClient(conn)
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
 	// Send message to gRPC server
-	r, err := client.SendDetection(
+	resp, err := client.ProcessImage(
 		ctx,
-		&engine.ObjectInformation{
-			CamId:     "my_new_uuid",
-			Timestamp: time.Now().Unix(),
-			Image:     sendS3,
-			Class: &engine.ClassInfo{
-				ClassId:   100,
-				ClassName: "find_ocr",
-			},
-			Detection: &engine.Detection{
+		&protos.LPRRequest{
+			Image: sendS3,
+			Bbox: &protos.BBox{
 				XLeft:  int32(*xConfig),
 				YTop:   int32(*yConfig),
 				Width:  int32(*widthConfig),
 				Height: int32(*heightConfig),
 			},
-			// Skip virtual line part (not needed)
-			VirtualLine: &engine.VirtualLineInfo{},
-			// Skip tracking info part (not needed)
-			TrackInformation: &engine.TrackInfo{},
 		},
 	)
 	if err != nil {
-		log.Fatalln(err)
+		fmt.Println(err)
+		return
 	}
-
-	if len(r.GetError()) != 0 {
-		log.Fatalln(r.GetError())
+	fmt.Println("Elapsed seconds:", resp.Elapsed)
+	fmt.Println("Detections num:", len(resp.LicensePlates))
+	for i, detection := range resp.LicensePlates {
+		fmt.Printf("Detection #%d:\n", i)
+		fmt.Println("\tText:", detection.Text)
+		fmt.Println("\tPlate bbox:", detection.Bbox)
+		fmt.Println("\tOCR bboxes:", detection.OcrBboxes)
 	}
-
-	if len(r.GetWarning()) != 0 {
-		log.Println("Warn:", r.GetWarning())
-	}
-
-	log.Println("Answer:", r.GetMessage())
 }

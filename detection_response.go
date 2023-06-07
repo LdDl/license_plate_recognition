@@ -18,6 +18,7 @@ type PlateResponse struct {
 	Probability   float64
 	Rect          image.Rectangle
 	CroppedNumber *image.NRGBA
+	OCRClassesIDs []int
 	OCRRects      []image.Rectangle
 }
 

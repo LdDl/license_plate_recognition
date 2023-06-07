@@ -16,19 +16,19 @@ func (r Detections) Less(i, j int) bool {
 	return r[i].BoundingBox.StartPoint.X < r[j].BoundingBox.StartPoint.X
 }
 
-func (net *YOLONetwork) detectSymbols(imgSrc image.Image) ([]image.Rectangle, string, float32, error) {
-	scaleWidth, scaleHeight := float64(imgSrc.Bounds().Dx())/416.0, float64(imgSrc.Bounds().Dy())/416.0
+func (net *YOLONetwork) detectSymbols(imgSrc image.Image) ([]image.Rectangle, []int, string, float32, error) {
 	img, err := darknet.Image2Float32(imgSrc)
 	if err != nil {
-		return nil, "", 0.0, err
+		return nil, []int{}, "", 0.0, err
 	}
 	dr, err := net.OCR.Detect(img)
 	if err != nil {
-		return nil, "nil", 0.0, err
+		return nil, []int{}, "nil", 0.0, err
 	}
 	img.Close()
 
 	var recognizedText string
+	var classIDs []int
 	var probabilities []float32
 	var rects []image.Rectangle
 
@@ -37,12 +37,13 @@ func (net *YOLONetwork) detectSymbols(imgSrc image.Image) ([]image.Rectangle, st
 		for i := range d.ClassIDs {
 			probabilities = append(probabilities, d.Probabilities[i])
 			recognizedText += d.ClassNames[i]
+			classIDs = append(classIDs, d.ClassIDs[i])
 			bBox := d.BoundingBox
-			minX, minY := float64(bBox.StartPoint.X)*scaleWidth, float64(bBox.StartPoint.Y)*scaleHeight
-			maxX, maxY := float64(bBox.EndPoint.X)*scaleWidth, float64(bBox.EndPoint.Y)*scaleHeight
+			minX, minY := float64(bBox.StartPoint.X), float64(bBox.StartPoint.Y)
+			maxX, maxY := float64(bBox.EndPoint.X), float64(bBox.EndPoint.Y)
 			rect := image.Rect(round(minX), round(minY), round(maxX), round(maxY))
 			rects = append(rects, rect)
 		}
 	}
-	return rects, recognizedText, sqrStdDeviation(probabilities), nil
+	return rects, classIDs, recognizedText, sqrStdDeviation(probabilities), nil
 }
