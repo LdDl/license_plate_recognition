@@ -1,0 +1,12 @@
+syntax = "proto3";
+package license_plate_recognition;
+
+option go_package = "./;protos";
+
+import "object.proto";
+
+// Main service
+service Service {
+    // Unary service: single request == single response
+    rpc ProcessImage(LPRRequest) returns (LPRResponse){};
+}

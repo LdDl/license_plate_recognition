@@ -5,6 +5,7 @@ import (
 	"image"
 	"image/jpeg"
 	"math"
+	"os"
 )
 
 func round(v float64) int {
@@ -44,4 +45,21 @@ func averagePercent64(arr []float64) float64 {
 		sum += arr[i]
 	}
 	return sum / float64(len(arr))
+}
+
+func ensureDir(dirName string) error {
+	err := os.MkdirAll(dirName, 0777)
+	if err == nil || os.IsExist(err) {
+		return nil
+	}
+	return err
+}
+
+func pascalVOC2YOLO(x1, y1, x2, y2, imgW, imgH float64) [4]float64 {
+	return [4]float64{
+		((x2 + x1) / (2 * imgW)),
+		((y2 + y1) / (2 * imgH)),
+		(x2 - x1) / imgW,
+		(y2 - y1) / imgH,
+	}
 }

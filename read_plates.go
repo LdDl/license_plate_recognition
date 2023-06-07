@@ -17,15 +17,16 @@ func (net *YOLONetwork) ReadLicensePlates(imgSrc image.Image, saveCrop bool) (*Y
 	}
 	for i := range plates {
 		rectcropimg := imaging.Crop(imgSrc, plates[i])
-		rects, text, prob, err := net.detectSymbols(rectcropimg)
+		rects, classesIDs, text, prob, err := net.detectSymbols(rectcropimg)
 		if err != nil {
 			return nil, err
 		}
 		plResp := PlateResponse{
-			Rect:        plates[i],
-			Text:        text,
-			Probability: float64(prob),
-			OCRRects:    rects,
+			Rect:          plates[i],
+			Text:          text,
+			Probability:   float64(prob),
+			OCRClassesIDs: classesIDs,
+			OCRRects:      rects,
 		}
 		if saveCrop {
 			plResp.CroppedNumber = rectcropimg

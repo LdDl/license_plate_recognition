@@ -17,41 +17,73 @@
 ## About
 This is a gRPC server which accepts image and can make license plate recognition (using YOLOv3 or YOLOv4 neural network).
 
-Server tries to find license plate at first. Then it does OCR (if it's possible).
-
 Neural networks were trained on dataset of russian license plates. But you can train it on another dataset - read about process here https://github.com/AlexeyAB/darknet#how-to-train-to-detect-your-custom-objects
+
+Server tries to find license plate at first. Then it does OCR (if it's possible) and provides output which can be represented later as follows:
+
+Sample plate #1            |  Sample plate #2
+:-------------------------:|:-------------------------:
+<img src="images/check_1.png" width="640">  |  <img src="images/check_2.png" width="640">
+
+<p style="text-align: center;"><i>Images has been taken near my house</i></p>
 
 Darknet architecture for finding license plates - [Yolo V3](https://arxiv.org/abs/1804.02767)
 
 Darknet architecture for doing OCR stuff - [Yolo V4](https://arxiv.org/abs/2004.10934)
 
-No OpenCV installation is needed!
-
-gRPC server accepts this data struct accordion to [ODaM specification](https://github.com/LdDl/odam/blob/master/yolo_grpc.proto):
+gRPC server accepts this data struct according [proto3 specification](service/rpc/protos/object.proto)
 ```protobuf
-message CamInfo{
-    string cam_id = 1; // id of camera (just to identify client app)
-    int64 timestamp = 2; // timestamp of vehicle fixation (on client app)
-    bytes image = 3; // bytes of full image in PNG-format
-    Detection detection = 4; // BBox of detected vehicle (region of interest where License Plate Recognition is needed)
-    VirtualLineInfo virtual_line = 5; // Line which detected object has been crossed (not necessary field, but helpfull for real-time detection on road traffic)
+// Essential information to process
+message LPRRequest{
+    // Bytes representation of image (PNG)
+    bytes image = 1;
+    // Optional information about image. Could be usefull if client-side already knows where license plate should be located (due some object detections technique)
+    BBox bbox = 2;
 }
-message Detection{
+
+// Reference information about detection rectangle
+message BBox{
     int32 x_left = 1;
     int32 y_top = 2;
     int32 height = 3;
     int32 width = 4;
 }
-message VirtualLineInfo{
-    int32 id = 1;
-    int32 left_x = 2;
-    int32 left_y = 3;
-    int32 right_x = 4;
-    int32 right_y = 5;
+```
+
+The gRPC server response is:
+```protobuf
+// Response from server
+message LPRResponse{
+    // Set of found license plates with corresponding information
+    repeated LPRInfo license_plates = 1;
+    // Number of seconds has taken to proccess license plate detections and OCR
+    float elapsed = 2;
+    // Optional message from server
+    string message = 3;
+    // Optional warning message from server. If it is not empty you probably should investiage such behavior
+    string warning = 4;
+    // Optional error message from server. If it is not empty you should investiage the error
+    string error = 5;
+}
+
+// Information about single license plate
+message LPRInfo {
+    // License plate location
+    BBox bbox = 1;
+    // License plate OCR bounding bboxes. Bounding bboxes are sorted by horizontal line
+    // Warning: those coordinates are relative to license plate bounding box, not the parent image!
+    repeated BBox ocr_bboxes = 2;
+    // License plate text
+    string text = 3;
 }
 ```
 
+Full gRPC documentation is here: [HTML](service/rpc/docs/service.html) or [Markdown](service/rpc/docs/service.md)
+
 ## Requirements
+
+$\textcolor{red}{\textsf{No OpenCV installation is needed!}}$ 
+
 Please follow instructions from [go-darknet](https://github.com/LdDl/go-darknet#go-darknet-go-bindings-for-darknet). There you will know how to install [AlexeyAB's darknet](https://github.com/AlexeyAB/darknet) and [Go-binding](https://github.com/LdDl/go-darknet) for it.
 
 ## Instalation
@@ -70,26 +102,6 @@ chmod +x download_data_RU.sh
 ./download_data_RU.sh
 ```
 
-### Custom Handler
-Do not forget (if needed) to implement [AfterFunc](https://github.com/LdDl/license_plate_recognition/blob/master/cmd/server/main.go#L93)
-
-Example is below:
-```go
-....
-rs := &RecognitionServer{
-    ....
-    AfterFunction: doSomeStuff,
-}
-....
-func doSomeStuff(data *PlateInfo, fileContents []byte) error {
-	/*
-		If you want, you can implement this function by yourself (and you can wrap this function also)
-		Default behaviour: do nothing.
-	*/
-	return nil
-}
-....
-```
 
 ## Usage
 ### Start server
@@ -106,6 +118,8 @@ func doSomeStuff(data *PlateInfo, fileContents []byte) error {
     ./recognition_server --cfg conf.toml
     ```
     Note: Please see [conf.toml](cmd/server/conf.toml) description for correct usage
+
+* On server's side the directory './detected' will appear if you provide `save_detected = true` in TOML configuration. Detected license plates with OCR annotations will be stored there.
 
 ### Test Client-Server
 **Notice: server should be started**
@@ -127,18 +141,16 @@ func doSomeStuff(data *PlateInfo, fileContents []byte) error {
     ./client_app --host=localhost --port=50051 --file=sample.jpg -x 0 -y 0 --width=42 --height=-24
     ```
 
-* On server's side there will be output something like this:
+* On client's side there will be output something like this:
     ```shell
-    2020/06/25 15:31:57
-    License plate #0:
-        Text: M288HO199
-        Deviation (for detected symbols): 1.808632
-        Rectangle's borders: (295,1057)-(608,1204)
-    License plate #1:
-        Text: A100CX777
-        Deviation (for detected symbols): 2.295539
-        Rectangle's borders: (2049,1384)-(2582,1618)
-    Elapsed to find plate and read symbols: 372.108605ms
+    Elapsed seconds: 0.17216872
+    Detections num: 2
+    Detection #0:
+            Text: A100CX777
+            Plate bbox: x_left:2027 y_top:2027 height:304 width:646
+            OCR bboxes: [x_left:109 y_top:109 height:71 width:71 x_left:186 y_top:186 height:77 width:59 x_left:252 y_top:252 height:79 width:66 x_left:323 y_top:323 height:80 width:73 x_left:404 y_top:404 height:77 width:77 x_left:485 y_top:485 height:70 width:83 x_left:584 y_top:584 height:72 width:71 x_left:657 y_top:657 height:76 width:68 x_left:731 y_top:731 height:76 width:66]
+    Detection #1:
+            Text: M288HO199
+            Plate bbox: x_left:262 y_top:262 height:186 width:391
+            OCR bboxes: [x_left:56 y_top:56 height:28 width:25 x_left:86 y_top:86 height:36 width:24 x_left:112 y_top:112 height:36 width:25 x_left:139 y_top:139 height:39 width:27 x_left:168 y_top:168 height:28 width:27 x_left:196 y_top:196 height:28 width:31 x_left:232 y_top:232 height:30 width:21 x_left:253 y_top:253 height:31 width:21 x_left:276 y_top:276 height:30 width:23]
     ```
-* On server's side the directory './detected' will appear also. Detected license plates will be stored there.
-

@@ -1,0 +1,45 @@
+syntax = "proto3";
+package license_plate_recognition;
+
+option go_package = "./;protos";
+
+// Essential information to process
+message LPRRequest{
+    // Bytes representation of image (PNG)
+    bytes image = 1;
+    // Optional information about image. Could be usefull if client-side already knows where license plate should be located (due some object detections technique)
+    BBox bbox = 2;
+}
+
+// Reference information about detection rectangle
+message BBox{
+    int32 x_left = 1;
+    int32 y_top = 2;
+    int32 height = 3;
+    int32 width = 4;
+}
+
+// Response from server
+message LPRResponse{
+    // Set of found license plates with corresponding information
+    repeated LPRInfo license_plates = 1;
+    // Number of seconds has taken to proccess license plate detections and OCR
+    float elapsed = 2;
+    // Optional message from server
+    string message = 3;
+    // Optional warning message from server. If it is not empty you probably should investiage such behavior
+    string warning = 4;
+    // Optional error message from server. If it is not empty you should investiage the error
+    string error = 5;
+}
+
+// Information about single license plate
+message LPRInfo {
+    // License plate location
+    BBox bbox = 1;
+    // License plate OCR bounding bboxes. Bounding bboxes are sorted by horizontal line
+    // Warning: those coordinates are relative to license plate bounding box, not the parent image!
+    repeated BBox ocr_bboxes = 2;
+    // License plate text
+    string text = 3;
+}
