@@ -17,6 +17,7 @@ var (
 )
 
 func main() {
+	flag.Parse()
 
 	cfgBytes, err := os.ReadFile(*confFile)
 	if err != nil {

@@ -7,3 +7,4 @@ cmd/client/main
 cmd/client/client_app
 .vs/*
 .vs
+Dockerfile
