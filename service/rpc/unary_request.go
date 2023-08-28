@@ -32,16 +32,16 @@ func (ts *Microservice) ProcessImage(ctx context.Context, in *protos.LPRRequest)
 	height := stdImage.Bounds().Dy()
 	width := stdImage.Bounds().Dx()
 
-	dw := 0
-	dh := 0
-	xl := width
-	yt := height
+	dw := width
+	dh := height
+	xl := 0
+	yt := 0
 
 	if in.Bbox != nil {
-		dw = int(in.Bbox.Width)
-		dh = int(in.Bbox.Height)
 		xl = int(in.Bbox.XLeft)
 		yt = int(in.Bbox.YTop)
+		dw = int(in.Bbox.Width)
+		dh = int(in.Bbox.Height)
 	}
 	if dw <= 0 || dh <= 0 || xl >= width || yt >= height {
 		return &protos.LPRResponse{Error: "Provided bounding box is incorrect"}, status.Error(codes.InvalidArgument, ErrBadBoundingBBox.Error())
