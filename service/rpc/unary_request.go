@@ -87,7 +87,7 @@ func (ts *Microservice) ProcessImage(ctx context.Context, in *protos.LPRRequest)
 		ans.LicensePlates[i] = &protos.LPRInfo{
 			Bbox: &protos.BBox{
 				XLeft:  int32(plate.Rect.Min.X),
-				YTop:   int32(plate.Rect.Min.X),
+				YTop:   int32(plate.Rect.Min.Y),
 				Height: int32(plate.Rect.Dy()),
 				Width:  int32(plate.Rect.Dx()),
 			},
@@ -97,7 +97,7 @@ func (ts *Microservice) ProcessImage(ctx context.Context, in *protos.LPRRequest)
 		for j, char := range plate.OCRRects {
 			ans.LicensePlates[i].OcrBboxes[j] = &protos.BBox{
 				XLeft:  int32(char.Min.X),
-				YTop:   int32(char.Min.X),
+				YTop:   int32(char.Min.Y),
 				Height: int32(char.Dy()),
 				Width:  int32(char.Dx()),
 			}
