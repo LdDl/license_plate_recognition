@@ -8,5 +8,5 @@ require (
 	github.com/disintegration/imaging v1.6.2
 	golang.org/x/image v0.10.0 // indirect
 	google.golang.org/grpc v1.56.3
-	google.golang.org/protobuf v1.30.0
+	google.golang.org/protobuf v1.33.0
 )
