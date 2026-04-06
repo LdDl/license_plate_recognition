@@ -99,6 +99,11 @@ cargo build --release                  # CPU only
 sudo mkdir -p /usr/local/include/od-bridge
 sudo cp od_bridge.h /usr/local/include/od-bridge/
 sudo cp target/release/libod_bridge.so /usr/local/lib/
+
+# 3. If built with --features cuda, also install ORT provider libraries:
+# sudo cp target/release/libonnxruntime_providers_cuda.so /usr/local/lib/
+# sudo cp target/release/libonnxruntime_providers_shared.so /usr/local/lib/
+
 sudo ldconfig
 ```
 
