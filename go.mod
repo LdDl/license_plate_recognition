@@ -4,7 +4,7 @@ go 1.14
 
 require (
 	github.com/BurntSushi/toml v1.1.0
-	github.com/LdDl/go-darknet v1.3.7
+	github.com/LdDl/go-darknet v1.3.8
 	github.com/disintegration/imaging v1.6.2
 	golang.org/x/image v0.18.0 // indirect
 	google.golang.org/grpc v1.56.3
