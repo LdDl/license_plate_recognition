@@ -1,4 +1,6 @@
-# Benchmark: go-darknet (current backend)
+# Benchmark: go-darknet vs od-bridge (ORT)
+
+Baseline darknet results measured on [v1.3.5](https://github.com/LdDl/license_plate_recognition/releases/tag/v1.3.5) (last darknet release).
 
 ## Hardware
 - **CPU:** Intel Core i5-10600K @ 4.10GHz
@@ -8,7 +10,8 @@
 
 ## Software
 - **Go:** 1.24+
-- **go-darknet:** v1.3.8
+- **go-darknet:** v1.3.8 (last darknet release: [v1.3.5](https://github.com/LdDl/license_plate_recognition/releases/tag/v1.3.5))
+- **od-bridge:** v0.1.0 (od_opencv + ORT 2.0-rc12, CUDA EP)
 - **darknet:** AlexeyAB/darknet, GPU=1, OPENCV=0
 
 ## Models
