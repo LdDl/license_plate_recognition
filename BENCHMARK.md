@@ -1,4 +1,6 @@
-# Benchmark: go-darknet (current backend)
+# Benchmark: go-darknet vs od-bridge (ORT)
+
+Baseline darknet results measured on [v1.3.5](https://github.com/LdDl/license_plate_recognition/releases/tag/v1.3.5) (last darknet release).
 
 ## Hardware
 - **CPU:** Intel Core i5-10600K @ 4.10GHz
@@ -8,7 +10,8 @@
 
 ## Software
 - **Go:** 1.24+
-- **go-darknet:** v1.3.8
+- **go-darknet:** v1.3.8 (last darknet release: [v1.3.5](https://github.com/LdDl/license_plate_recognition/releases/tag/v1.3.5))
+- **od-bridge:** v0.1.0 (od_opencv + ORT 2.0-rc12, CUDA EP)
 - **darknet:** AlexeyAB/darknet, GPU=1, OPENCV=0
 
 ## Models
@@ -20,30 +23,30 @@
 
 ## Results (50 iterations, 3 warmup runs)
 
-### Full pipeline (plate detection + OCR)
+### Summary
 
-| Metric | go-darknet v1.3.8 (GPU) |
-|--------|------------------------|
-| Avg/frame | 155 ms |
-| FPS | 6.5 |
+| Test | go-darknet v1.3.5 (GPU) | od-bridge ORT (CUDA) | Speedup |
+|------|------------------------|---------------------|---------|
+| Plate detection | 132 ms / 7.6 FPS | **24 ms / 41.1 FPS** | **5.5x** |
+| Full pipeline (detect + OCR) | 155 ms / 6.5 FPS | **77 ms / 13.0 FPS** | **2.0x** |
 
-### Plate detection only
+### od-bridge ORT (CUDA) details
 
-| Metric | With Image2Float32 | Detect only (pre-converted) |
-|--------|-------------------|----------------------------|
-| Avg/frame | 132 ms | 33 ms |
-| FPS | 7.6 | 30.3 |
+| Test | Avg/frame | FPS |
+|------|-----------|-----|
+| Plate detection | 24 ms | 41.1 |
+| OCR (single crop 639x303) | 20 ms | 50.3 |
+| Full pipeline (detect + OCR all) | 77 ms | 13.0 |
 
-### Image conversion overhead
+### go-darknet v1.3.5 details
 
-| Method | Avg/conversion |
-|--------|---------------|
-| Original `Image2Float32` (v1.3.8, with `draw.Copy`) | 82 ms |
-| Direct NRGBA via CGO (experimental `bench_plates_only_fixed.go`) | 89 ms |
+| Test | Avg/frame | FPS |
+|------|-----------|-----|
+| Plate detection (with Image2Float32) | 132 ms | 7.6 |
+| Plate detection (Detect only, pre-converted) | 33 ms | 30.3 |
+| Full pipeline (detect + OCR) | 155 ms | 6.5 |
 
-The experimental direct-NRGBA conversion does not improve performance (0.9x). The CGO per-pixel overhead outweighs the savings from removing `draw.Copy`.
-
-### Overhead analysis
+### Overhead analysis (go-darknet)
 
 | Component | Time |
 |-----------|------|
@@ -51,24 +54,31 @@ The experimental direct-NRGBA conversion does not improve performance (0.9x). Th
 | GPU inference | ~33 ms |
 | **Total plate detection** | **~132 ms** |
 
-Image conversion accounts for **62%** of total plate detection time.
+Image conversion accounts for 62% of total plate detection time in go-darknet.
+ORT accepts raw uint8 HWC input and fuses conversion into the GPU pipeline, eliminating this bottleneck.
 
 ## How to reproduce
 
-Requires [AlexeyAB/darknet](https://github.com/AlexeyAB/darknet): `libdarknet.so` must be in the linker search path (e.g. `/usr/local/lib`) and `darknet.h` must be findable via `CGO_CFLAGS` if not in a standard include path.
+### od-bridge (current)
+
+Requires [od-bridge](https://github.com/LdDl/od-bridge) installed with CUDA support (see [installation guide](https://github.com/LdDl/od-bridge#installation)).
 
 ```bash
+cd cmd/benchmark
+go run bench_od_bridge.go
+```
+
+### go-darknet (baseline, v1.3.5)
+
+Requires [AlexeyAB/darknet](https://github.com/AlexeyAB/darknet): `libdarknet.so` must be in the linker search path and `darknet.h` must be findable via `CGO_CFLAGS` if not in a standard include path.
+
+```bash
+git checkout v1.3.5
 cd cmd/benchmark
 
 # If darknet.h is not in a standard include path, set CGO_CFLAGS:
 # export CGO_CFLAGS="-I/path/to/darknet/include"
 
-# Full pipeline (detect + OCR)
 go run bench_darknet.go
-
-# Plate detection only (with/without Image2Float32)
 go run bench_plates_only.go
-
-# Experimental: direct NRGBA conversion
-go run bench_plates_only_fixed.go
 ```

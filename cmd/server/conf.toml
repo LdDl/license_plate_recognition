@@ -8,17 +8,23 @@ save_detected = true
 queue_limit = 200
 
 [yolo_plates]
-# Path to LICENSE PLATES network layer configuration file
-cfg = "../data/license_plates_inference.cfg"
-# Path to weights file
-weights = "../data/license_plates_100000.weights"
+# Path to ONNX model for license plate detection
+model = "../data/license_plates.onnx"
+# Path to class names file
+names = "../data/license_plates.names"
+# Model input dimensions
+input_w = 416
+input_h = 416
 # Threshold should not be < 0.0
 threshold = 0.3
 
 [yolo_ocr]
-# Path to OCR network layer configuration file
-cfg = "../data/ocr_plates_inference.cfg"
-# Path to weights file
-weights = "../data/ocr_plates_140000.weights"
+# Path to ONNX model for OCR
+model = "../data/ocr_plates.onnx"
+# Path to class names file
+names = "../data/ocr_plates.names"
+# Model input dimensions
+input_w = 416
+input_h = 416
 # Threshold should not be < 0.0
 threshold = 0.4
