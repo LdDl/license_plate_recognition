@@ -1,13 +1,13 @@
-# License Plate Recognition with [go-darknet](https://github.com/LdDl/go-darknet) [![GoDoc](https://godoc.org/github.com/LdDl/license_plate_recognition?status.svg)](https://godoc.org/github.com/LdDl/license_plate_recognition) [![Sourcegraph](https://sourcegraph.com/github.com/LdDl/license_plate_recognition/-/badge.svg)](https://sourcegraph.com/github.com/LdDl/license_plate_recognition?badge) [![Go Report Card](https://goreportcard.com/badge/github.com/LdDl/license_plate_recognition)](https://goreportcard.com/report/github.com/LdDl/license_plate_recognition) [![GitHub tag](https://img.shields.io/github/tag/LdDl/license_plate_recognition.svg)](https://github.com/LdDl/license_plate_recognition/releases)
+# License Plate Recognition with [od-bridge](https://github.com/LdDl/od-bridge) [![GoDoc](https://godoc.org/github.com/LdDl/license_plate_recognition?status.svg)](https://godoc.org/github.com/LdDl/license_plate_recognition) [![Sourcegraph](https://sourcegraph.com/github.com/LdDl/license_plate_recognition/-/badge.svg)](https://sourcegraph.com/github.com/LdDl/license_plate_recognition?badge) [![Go Report Card](https://goreportcard.com/badge/github.com/LdDl/license_plate_recognition)](https://goreportcard.com/report/github.com/LdDl/license_plate_recognition) [![GitHub tag](https://img.shields.io/github/tag/LdDl/license_plate_recognition.svg)](https://github.com/LdDl/license_plate_recognition/releases)
 
 ## Table of Contents
 
 - [About](#about)
-- [Requirements](#requirements)
+- [Requirements (server-side only)](#requirements-server-side-only)
 - [Installation](#installation)
     - [Get source code](#get-source-code)
     - [Protobuf generation](#generate-protobuf-*.go-files-for-Go-server-and-Go-client)
-    - [Neural net weights](#download-weights-and-configuration)
+    - [Neural network weights](#neural-network-weights)
     - [Custom handler](#custom-handler)
 - [Usage](#usage)
     - [Server](#start-server)
@@ -80,26 +80,75 @@ message LPRInfo {
 
 Full gRPC documentation is here: [HTML](service/rpc/docs/service.html) or [Markdown](service/rpc/docs/service.md)
 
-## Requirements
+## Requirements (server-side only)
 
-$\textcolor{red}{\textsf{No OpenCV installation is needed!}}$ 
+The gRPC client does not require any native dependencies.
 
-Please follow instructions from [go-darknet](https://github.com/LdDl/go-darknet#go-darknet-go-bindings-for-darknet). There you will know how to install [AlexeyAB's darknet](https://github.com/AlexeyAB/darknet) and [Go-binding](https://github.com/LdDl/go-darknet) for it.
+### od-bridge (Rust inference backend)
 
-## Instalation
+The server uses [od-bridge](https://github.com/LdDl/od-bridge) for ONNX model inference via CGO. See the [od-bridge installation guide](https://github.com/LdDl/od-bridge#installation) for build and install instructions.
 
-### Get source code
-**Notice: we are using Go-modules**
-```shell
-go get https://github.com/LdDl/license_plate_recognition
+```bash
+# 1. Clone and build
+git clone https://github.com/LdDl/od-bridge.git
+cd od-bridge
+cargo build --release                  # CPU only
+# cargo build --release --features cuda  # with CUDA
+
+# 2. Install shared library and header
+sudo mkdir -p /usr/local/include/od-bridge
+sudo cp od_bridge.h /usr/local/include/od-bridge/
+sudo cp target/release/libod_bridge.so /usr/local/lib/
+sudo ldconfig
 ```
 
-### Download weights and configuration
-**Notice: please read [source code of *.sh script](cmd/download_data_RU.sh) before downloading. This script MAY NOT fit yours needs.**
-```shell
-cd cmd/
-chmod +x download_data_RU.sh
-./download_data_RU.sh
+Verify the installation:
+
+```bash
+ldconfig -p | grep od_bridge
+```
+
+See the [od-bridge README](https://github.com/LdDl/od-bridge#installation) for details.
+
+### Neural network weights
+
+Models must be in ONNX format. If the pre-trained weights suit your needs, you can download them from the [latest release](https://github.com/LdDl/license_plate_recognition/releases/tag/latest):
+
+```bash
+mkdir -p data && cd data
+curl -sLO https://github.com/LdDl/license_plate_recognition/releases/download/latest/license_plates.onnx
+curl -sLO https://github.com/LdDl/license_plate_recognition/releases/download/latest/license_plates.names
+curl -sLO https://github.com/LdDl/license_plate_recognition/releases/download/latest/ocr_plates.onnx
+curl -sLO https://github.com/LdDl/license_plate_recognition/releases/download/latest/ocr_plates.names
+```
+
+If you want to convert darknet `.cfg` + `.weights` to ONNX yourself, download the source weights and use [darknet2onnx](https://github.com/LdDl/darknet2onnx):
+
+```bash
+mkdir -p data && cd data
+curl -sLO https://github.com/LdDl/license_plate_recognition/releases/download/latest/license_plates_inference.cfg
+curl -sLO https://github.com/LdDl/license_plate_recognition/releases/download/latest/license_plates_100000.weights
+curl -sLO https://github.com/LdDl/license_plate_recognition/releases/download/latest/ocr_plates_inference.cfg
+curl -sLO https://github.com/LdDl/license_plate_recognition/releases/download/latest/ocr_plates_140000.weights
+
+darknet2onnx --cfg license_plates_inference.cfg --weights license_plates_100000.weights --output license_plates.onnx --format yolov8
+darknet2onnx --cfg ocr_plates_inference.cfg --weights ocr_plates_140000.weights --output ocr_plates.onnx --format yolov8
+```
+
+## Installation
+
+### Get source code
+
+```bash
+go get github.com/LdDl/license_plate_recognition
+```
+
+### Build
+
+After installing od-bridge (see [Requirements](#requirements)):
+
+```bash
+go build ./...
 ```
 
 
