@@ -37,7 +37,24 @@ func main() {
 	if conf.YOLOOCR.Threshold <= 0.0 {
 		conf.YOLOOCR.Threshold = 0.3
 	}
-	netw, err := engine.NewYOLONetwork(conf.YOLOPlates.Cfg, conf.YOLOPlates.Weights, conf.YOLOOCR.Cfg, conf.YOLOOCR.Weights, conf.YOLOPlates.Threshold, conf.YOLOOCR.Threshold)
+	if conf.YOLOPlates.InputW <= 0 {
+		conf.YOLOPlates.InputW = 416
+	}
+	if conf.YOLOPlates.InputH <= 0 {
+		conf.YOLOPlates.InputH = 416
+	}
+	if conf.YOLOOCR.InputW <= 0 {
+		conf.YOLOOCR.InputW = 416
+	}
+	if conf.YOLOOCR.InputH <= 0 {
+		conf.YOLOOCR.InputH = 416
+	}
+	netw, err := engine.NewYOLONetwork(
+		conf.YOLOPlates.Model, conf.YOLOPlates.Names,
+		conf.YOLOOCR.Model, conf.YOLOOCR.Names,
+		conf.YOLOPlates.InputW, conf.YOLOPlates.InputH,
+		conf.YOLOPlates.Threshold, conf.YOLOOCR.Threshold,
+	)
 	if err != nil {
 		fmt.Println(err)
 		return
