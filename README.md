@@ -5,10 +5,6 @@
 - [About](#about)
 - [Requirements (server-side only)](#requirements-server-side-only)
 - [Installation](#installation)
-    - [Get source code](#get-source-code)
-    - [Protobuf generation](#generate-protobuf-*.go-files-for-Go-server-and-Go-client)
-    - [Neural network weights](#neural-network-weights)
-    - [Custom handler](#custom-handler)
 - [Usage](#usage)
     - [Server](#start-server)
     - [Client](#test-client-server)
@@ -142,20 +138,10 @@ darknet2onnx --cfg ocr_plates_inference.cfg --weights ocr_plates_140000.weights 
 
 ## Installation
 
-### Get source code
-
+Just pull source code:
 ```bash
 go get github.com/LdDl/license_plate_recognition
 ```
-
-### Build
-
-After installing od-bridge (see [Requirements](#requirements)):
-
-```bash
-go build ./...
-```
-
 
 ## Usage
 ### Start server
