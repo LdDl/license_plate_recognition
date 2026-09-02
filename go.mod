@@ -5,12 +5,11 @@ go 1.25.0
 require (
 	github.com/BurntSushi/toml v1.1.0
 	github.com/disintegration/imaging v1.6.2
-	google.golang.org/grpc v1.56.3
-	google.golang.org/protobuf v1.33.0
+	google.golang.org/grpc v1.83.1
+	google.golang.org/protobuf v1.36.11
 )
 
 require (
-	github.com/golang/protobuf v1.5.3 // indirect
 	golang.org/x/image v0.41.0 // indirect
 	golang.org/x/net v0.55.0 // indirect
 	golang.org/x/sys v0.45.0 // indirect
